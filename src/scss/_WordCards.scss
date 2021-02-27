@@ -1,0 +1,18 @@
+.word-cards {
+
+  .image-container {
+    width: 30rem;
+    height: 30rem;
+    overflow: hidden;
+    background-size: cover;
+    background-repeat: no-repeat;
+  }
+
+  img {
+    object-fit: fill;
+    object-position: center;
+    width: 100%;
+    max-height: 20rem;
+    margin-bottom: 1rem;
+  }
+}
