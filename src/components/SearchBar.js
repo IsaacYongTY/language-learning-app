@@ -5,7 +5,7 @@ import { languageInfo } from '../lib/mockData'
 import {capitalizeWord} from "../lib/library";
 
 
-const SearchBar = ( { data, setData }) => {
+const SearchBar = ( { data, setData, setShowModal }) => {
 
     const [ selectedLanguage, setSelectedLanguage ] = useState('en')
 
@@ -33,9 +33,8 @@ const SearchBar = ( { data, setData }) => {
             {/*        <Dropdown.Item onClick={() => setSelectedLanguage('zh')}>Chinese</Dropdown.Item>*/}
             {/*        <Dropdown.Item onClick={() => setSelectedLanguage('es')}>Spanish</Dropdown.Item>*/}
             {/*    </Dropdown.Menu>*/}
-
             {/*</Dropdown>*/}
-            <Button> + Add New</Button>
+            <Button onClick={() => setShowModal(true)}> + Add New</Button>
         </Row>
     )
 }
