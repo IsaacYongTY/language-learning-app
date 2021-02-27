@@ -16,7 +16,8 @@ const LanguageSection = ({ language }) => {
     languageName = capitalizeWord(languageName)
     return (
         <div>
-            <p><Badge>{languageName}</Badge> {language.word}</p>
+            <p><Badge>{languageName}</Badge> {language.word} <span>{ipaDict[language.code].get(language.word)}</span></p>
+
             <p>{ isGender && `Feminine: ${language.feminine}`}</p>
             <p>{ writingSystem !== 'latin' && `Romanized: ${language.romanized}` }</p>
             <hr />
