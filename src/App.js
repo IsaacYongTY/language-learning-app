@@ -8,7 +8,8 @@ import Header from "./components/Header";
 import React from "react";
 
 function App() {
-  return (
+
+    return (
     <div className="App">
       <BrowserRouter>
         <Switch>
@@ -16,6 +17,7 @@ function App() {
 
             <Route exact path="/" >
                 <MainPage />
+
             </Route>
 
             <Route path="/login">

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import {Button} from "react-bootstrap";
-
+import '../../scss/_DisplayLanguageBar.scss'
 const DisplayLanguageBar = ({displayLanguage, setDisplayLanguage}) => {
 
     const handleToggleLanguage = (language) => {
@@ -16,7 +16,7 @@ const DisplayLanguageBar = ({displayLanguage, setDisplayLanguage}) => {
     const defaultLanguageSet = ['en', 'es', 'zh']
 
     return (
-        <div>
+        <div className="mb-4">
             {
                 defaultLanguageSet.map((defaultLanguage => (
 
