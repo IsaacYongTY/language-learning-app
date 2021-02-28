@@ -1,5 +1,6 @@
 export const mockData = [
     {
+        id: 1,
         word: 'cat',
         imageUrl: 'https://firebasestorage.googleapis.com/v0/b/language-learning-app-bced4.appspot.com/o/cat.jpeg?alt=media&token=c888181c-5e8f-432d-beb2-451edbcc375c',
         languages:
@@ -38,8 +39,10 @@ export const mockData = [
             ]
     },
     {
+        id: 2,
         word: 'dog',
-        imageUrl: 'https://firebasestorage.googleapis.com/v0/b/language-learning-app-bced4.appspot.com/o/dog.jpg?alt=media&token=45a0ca66-0b18-481c-8f3f-e07ea27c97ff',    languages:
+        imageUrl: 'https://firebasestorage.googleapis.com/v0/b/language-learning-app-bced4.appspot.com/o/dog.jpg?alt=media&token=45a0ca66-0b18-481c-8f3f-e07ea27c97ff',
+        languages:
             [
                 {
                     code: 'en',

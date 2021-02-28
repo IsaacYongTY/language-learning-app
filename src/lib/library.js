@@ -5,6 +5,8 @@ import ipaDictVi from 'ipa-dict/lib/vi_S'
 import firebase from './firebase'
 
 const db = firebase.firestore()
+const storage = firebase.storage()
+
 export const capitalizeWord = (word) => word.split('').map((char, index) => !index ? char.toUpperCase() : char).join('')
 
 export const ipaDict = {
@@ -48,4 +50,15 @@ export async function translateText(text,target, setTranslatedText) {
     });
 
     setTranslatedText(prevState => ({...prevState, [target]: translations }))
+}
+
+export const addToStorage = async (file) => {
+    const storageRef = storage.ref()
+
+    console.log(file)
+
+
+    const uploadTask = await storageRef.child('images/cat.jpg').put(file)
+
+    console.log(uploadTask)
 }

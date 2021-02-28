@@ -1,10 +1,10 @@
-import React, {useCallback, useRef, useState} from 'react'
+import React, {useCallback, useRef, useState, useEffect} from 'react'
 import {Button, Form, Modal} from "react-bootstrap";
 import ReactCrop from 'react-image-crop'
 import 'react-image-crop/dist/ReactCrop.css';
 import '../scss/_AddCardAdminModal.scss'
 import axios from 'axios'
-import { translateText } from '../lib/library'
+import { translateText, addToStorage } from '../lib/library'
 
 
 
@@ -21,14 +21,9 @@ const AddCardAdminModal = ({ showModal, setShowModal }) => {
     const [completedCrop, setCompletedCrop] = useState(null);
 
     const imgRef = useRef(null)
-
+    const previewCanvasRef = useRef(null);
 
     const handleTranslateTextInput = (e) => setToTranslateText(e.target.value)
-
-
-
-
-
 
     const handleTranslateText = (text, target) => {
 
@@ -101,6 +96,52 @@ const AddCardAdminModal = ({ showModal, setShowModal }) => {
 
     }
 
+    const handleAddToStorage = (canvas, file) => {
+
+           canvas.then((blob) => {
+                addToStorage(blob)
+            })
+
+
+
+
+    }
+
+    async function getCroppedImg(image, crop, fileName) {
+        const canvas = document.createElement('canvas');
+        const scaleX = image.naturalWidth / image.width;
+        const scaleY = image.naturalHeight / image.height;
+        canvas.width = crop.width;
+        canvas.height = crop.height;
+        const ctx = canvas.getContext('2d');
+
+        ctx.drawImage(
+            image,
+            crop.x * scaleX,
+            crop.y * scaleY,
+            crop.width * scaleX,
+            crop.height * scaleY,
+            0,
+            0,
+            crop.width,
+            crop.height,
+        );
+
+        // As Base64 string
+        // const base64Image = canvas.toDataURL('image/jpeg');
+
+        // As a blob
+        return new Promise((resolve, reject) => {
+            canvas.toBlob(blob => {
+                blob.name = fileName;
+                resolve(blob);
+            }, 'image/jpeg', 1);
+
+        });
+
+
+    }
+
     return (
         <Modal className="add-card-admin-modal" show={showModal} onHide={handleHideModal} size='lg'>
             <Modal.Header closeButton>
@@ -109,11 +150,15 @@ const AddCardAdminModal = ({ showModal, setShowModal }) => {
 
             <Modal.Body>
 
-                <span>Word:</span><Form.Control onChange={(e) => handleTranslateTextInput(e)} placeholder="testing"></Form.Control>
-
+                <span>Word:</span>
+                <Form.Control
+                    onChange={(e) => handleTranslateTextInput(e)}
+                    placeholder="testing"
+                 />
 
 
                 <Button onClick={() => handleGetUnsplashImage(toTranslateText)}>Get from Unsplash</Button>
+
                 {isUnsplashError && <div className="error-message">Please key in your word</div>}
                 <Form.File accept="image/*" onChange={(e) => handleSelectFile(e)}/>
                 <div className="image-container my-3">
@@ -123,6 +168,16 @@ const AddCardAdminModal = ({ showModal, setShowModal }) => {
                         crop={crop}
                         onChange={(c) => setCrop(c)}
                         onComplete={(c) => setCompletedCrop(c)}
+                    />
+                </div>
+                <div>
+                    <canvas
+                        ref={previewCanvasRef}
+                        // Rounding is important so the canvas width and height matches/is a multiple for sharpness.
+                        style={{
+                            width: Math.round(completedCrop?.width ?? 0),
+                            height: Math.round(completedCrop?.height ?? 0)
+                        }}
                     />
                 </div>
 
@@ -137,6 +192,7 @@ const AddCardAdminModal = ({ showModal, setShowModal }) => {
             </Modal.Body>
 
             <Modal.Footer>
+                <Button onClick={() => handleAddToStorage(getCroppedImg(previewCanvasRef.current,crop,'cato'))}>Test</Button>
                 <Button onClick={handleHideModal}>Close</Button>
                 <Button>Add</Button>
             </Modal.Footer>
