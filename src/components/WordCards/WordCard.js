@@ -4,7 +4,7 @@ import DisplayLanguageBar from './DisplayLanguageBar'
 import LanguageSection from './LanguageSection'
 import '../../scss/_WordCard.scss'
 
-const WordCard = ( { word }) => {
+const WordCard = ( { word, defaultTargetLanguages }) => {
 
     const [displayLanguage, setDisplayLanguage] = useState([])
     const [ selectedArray, setSelectedArray ] = useState([])
@@ -32,7 +32,11 @@ const WordCard = ( { word }) => {
 
                     </Card.Img>
                 <Card.Body>
-                    <DisplayLanguageBar displayLanguage={displayLanguage} setDisplayLanguage={setDisplayLanguage}/>
+                    <DisplayLanguageBar
+                        displayLanguage={displayLanguage}
+                        setDisplayLanguage={setDisplayLanguage}
+                        defaultTargetLanguages={defaultTargetLanguages}
+                    />
                     {translation}
                 </Card.Body>
 
