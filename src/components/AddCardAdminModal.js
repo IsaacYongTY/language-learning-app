@@ -23,6 +23,40 @@ const AddCardAdminModal = ({ showModal, setShowModal }) => {
     const imgRef = useRef(null)
     const previewCanvasRef = useRef(null);
 
+    useEffect(() => {
+        if (!completedCrop || !previewCanvasRef.current || !imgRef.current) {
+            return;
+        }
+
+        const image = imgRef.current;
+        const canvas = previewCanvasRef.current;
+        const crop = completedCrop;
+
+        const scaleX = image.naturalWidth / image.width;
+        const scaleY = image.naturalHeight / image.height;
+        const ctx = canvas.getContext('2d');
+        const pixelRatio = window.devicePixelRatio;
+
+        canvas.width = crop.width * pixelRatio;
+        canvas.height = crop.height * pixelRatio;
+
+        ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+        ctx.imageSmoothingQuality = 'high';
+
+        ctx.drawImage(
+            image,
+            crop.x * scaleX,
+            crop.y * scaleY,
+            crop.width * scaleX,
+            crop.height * scaleY,
+            0,
+            0,
+            crop.width,
+            crop.height
+        );
+    }, [completedCrop]);
+
+
     const handleTranslateTextInput = (e) => setToTranslateText(e.target.value)
 
     const handleTranslateText = (text, target) => {
@@ -64,7 +98,9 @@ const AddCardAdminModal = ({ showModal, setShowModal }) => {
             let apiUrl = `https://api.unsplash.com/search/photos?query=${word}&per_page=${perPage}`
             let config = {
                 headers: {
-                    Authorization: `Client-ID ${process.env.REACT_APP_UNSPLASH_APIKEY}`
+                    Authorization: `Client-ID ${process.env.REACT_APP_UNSPLASH_APIKEY}`,
+                    'Access-Control-Allow-Origin': '*'
+
                 }
 
             }
@@ -78,7 +114,7 @@ const AddCardAdminModal = ({ showModal, setShowModal }) => {
             }))
 
             setImageArray(arr)
-
+            
             let randomNum = Math.floor(Math.random() * perPage)
             setUploadedImage(arr[randomNum].image)
             setIsUnsplashError(false)
@@ -96,50 +132,25 @@ const AddCardAdminModal = ({ showModal, setShowModal }) => {
 
     }
 
-    const handleAddToStorage = (canvas, file) => {
-
-           canvas.then((blob) => {
-                addToStorage(blob)
-            })
+    const handleAddToStorage = async (canvas, file) => {
 
 
 
 
     }
 
-    async function getCroppedImg(image, crop, fileName) {
-        const canvas = document.createElement('canvas');
-        const scaleX = image.naturalWidth / image.width;
-        const scaleY = image.naturalHeight / image.height;
-        canvas.width = crop.width;
-        canvas.height = crop.height;
-        const ctx = canvas.getContext('2d');
+    function generateDownload(canvas, crop) {
+        if (!crop || !canvas) {
+            return;
+        }
 
-        ctx.drawImage(
-            image,
-            crop.x * scaleX,
-            crop.y * scaleY,
-            crop.width * scaleX,
-            crop.height * scaleY,
-            0,
-            0,
-            crop.width,
-            crop.height,
+        canvas.toBlob(
+            (blob) => {
+               addToStorage(blob)
+            },
+            'image/png',
+            1
         );
-
-        // As Base64 string
-        // const base64Image = canvas.toDataURL('image/jpeg');
-
-        // As a blob
-        return new Promise((resolve, reject) => {
-            canvas.toBlob(blob => {
-                blob.name = fileName;
-                resolve(blob);
-            }, 'image/jpeg', 1);
-
-        });
-
-
     }
 
     return (
@@ -176,7 +187,8 @@ const AddCardAdminModal = ({ showModal, setShowModal }) => {
                         // Rounding is important so the canvas width and height matches/is a multiple for sharpness.
                         style={{
                             width: Math.round(completedCrop?.width ?? 0),
-                            height: Math.round(completedCrop?.height ?? 0)
+                            height: Math.round(completedCrop?.height ?? 0),
+                            display: 'none'
                         }}
                     />
                 </div>
@@ -192,7 +204,7 @@ const AddCardAdminModal = ({ showModal, setShowModal }) => {
             </Modal.Body>
 
             <Modal.Footer>
-                <Button onClick={() => handleAddToStorage(getCroppedImg(previewCanvasRef.current,crop,'cato'))}>Test</Button>
+                <Button onClick={() => generateDownload(previewCanvasRef.current,crop)}>Test</Button>
                 <Button onClick={handleHideModal}>Close</Button>
                 <Button>Add</Button>
             </Modal.Footer>
