@@ -4,7 +4,7 @@ import ReactCrop from 'react-image-crop'
 import 'react-image-crop/dist/ReactCrop.css';
 import '../scss/_AddCardAdminModal.scss'
 import axios from 'axios'
-import {translateText, addToStorage, ipaDict, convertToIpa} from '../lib/library'
+import {translateText, addToStorage, convertToIpa} from '../lib/library'
 
 
 
@@ -18,8 +18,6 @@ const AddCardAdminModal = ({ showModal, setShowModal }) => {
     const [ isUnsplashError, setIsUnsplashError ] = useState(false)
 
     const [ downloadedImage, setDownloadedImage ] = useState(null)
-
-    const [ data, setData ] = useState({})
 
     const [crop, setCrop] = useState({ unit: '%', width: 100, aspect: 1 / 1 });
     const [completedCrop, setCompletedCrop] = useState(null);

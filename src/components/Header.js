@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
-import { NavLink } from 'react-router-dom'
+import React  from 'react'
 import '../scss/_Header.scss'
+
 import LogoutButton from './LogoutButton'
 import Navbar from './Navbar'
 

@@ -1,10 +1,9 @@
 import './App.scss';
-import { BrowserRouter, Switch, Link, Route } from 'react-router-dom'
+import { BrowserRouter, Switch, Route } from 'react-router-dom'
 import LoginPage from './components/LoginPage'
 import MainPage from './components/MainPage'
 import FlashCards from "./components/FlashCards";
 import Playground from './components/Playground'
-import Header from "./components/Header";
 import React from "react";
 
 function App() {

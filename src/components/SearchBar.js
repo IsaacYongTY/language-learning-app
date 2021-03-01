@@ -1,8 +1,7 @@
 import React, { useEffect } from 'react'
-import { Row, Form, Button, Dropdown } from 'react-bootstrap'
-import { mockData } from "../lib/mockData";
+import { Row, Form, Button } from 'react-bootstrap'
 
-const SearchBar = ( { data, setData, filteredData, setFilteredData, setShowModal }) => {
+const SearchBar = ( { data, setFilteredData, setShowModal }) => {
 
 
     useEffect(() => {

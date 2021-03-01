@@ -25,6 +25,7 @@ const MainPage = (props) => {
     const history = useHistory()
 
     useEffect(() => {
+
         firebase.auth().onAuthStateChanged( user => {
 
 
@@ -37,7 +38,10 @@ const MainPage = (props) => {
                     setDefaultTargetLanguages(userProfile.defaultTargetLanguages)
                     setIsLogin(true)
 
+
                     getCollectionData('default-deck', setData)
+
+
 
                 })
 
@@ -46,6 +50,11 @@ const MainPage = (props) => {
         })
 
     }, [])
+
+    const fetchData = async () => {
+        let result = await getCollectionData('default-deck', setData)
+        console.log(result)
+    }
 
     return (
 
@@ -56,9 +65,7 @@ const MainPage = (props) => {
                     <Container fluid >
                         <SearchBar
                             data={data}
-                            filteredData={filteredData}
                             setFilteredData={setFilteredData}
-                            setData={setData}
                             setShowModal={setShowModal}
                         />
                         <WordCards

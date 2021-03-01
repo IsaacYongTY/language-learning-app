@@ -65,9 +65,11 @@ export const addToStorage = async (collection, file, id, data) => {
 
     const imageUrl = await storageRef.child(`default-deck/${id}/${id}.jpg`).getDownloadURL()
 
-    console.log(data)
-    data[`imageUrl`] = imageUrl
-    console.log(data)
+
+
+        data[`imageUrl`] = imageUrl
+
+
 
      await db.collection(collection).doc(id).set(data)
 
@@ -75,16 +77,19 @@ export const addToStorage = async (collection, file, id, data) => {
 
 
 export const getCollectionData = async (collection, setData) => {
-    let resultArray = []
 
-    db.collection(collection).onSnapshot((querySnapshot) => {
+    const collectionData = await db.collection(collection)
 
+    collectionData.onSnapshot((querySnapshot) => {
+        let resultArray = []
+            console.log(querySnapshot.size)
          querySnapshot.forEach(doc => {
-
+            console.log(doc.data())
              resultArray.push(doc.data())
          })
 
         setData(resultArray)
+
 
 
     })
