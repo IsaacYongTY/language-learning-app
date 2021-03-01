@@ -1,22 +1,16 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { languageInfo } from "../../lib/mockData";
-import { Card, Badge } from 'react-bootstrap'
-import { capitalizeWord, ipaDict } from "../../lib/library";
-import ipaDictEN from 'ipa-dict/lib/en_US'
-import ipaDictZhHans from 'ipa-dict/lib/zh_hans'
-
+import { Badge } from 'react-bootstrap'
 
 const LanguageSection = ({ language }) => {
 
-
-    console.log(ipaDict.en.get('cat'))
-    const languageParams = languageInfo.find(element => element['code'] === language['code'])
+    const languageParams = languageInfo.find(element => element['id'] === language['id'])
     console.log(languageParams)
-    let { isGender, writingSystem, languageName } = languageParams
-    languageName = capitalizeWord(languageName)
+    let { isGender, writingSystem, name } = languageParams
+
     return (
         <div>
-            <p><Badge>{languageName}</Badge> {language.word} <span>{ipaDict[language.code].get(language.word)}</span></p>
+            <p><Badge>{name}</Badge> {language.word} <span>{language.ipa}</span></p>
 
             <p>{ isGender && `Feminine: ${language.feminine}`}</p>
             <p>{ writingSystem !== 'latin' && `Romanized: ${language.romanized}` }</p>

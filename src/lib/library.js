@@ -16,6 +16,11 @@ export const ipaDict = {
     vi: ipaDictVi
 }
 
+export const convertToIpa = (words, targetLanguage) => {
+
+    return words.split(' ').map(word => ipaDict[targetLanguage].get(word)).join(' ')
+}
+
 export const getUserProfile = async (collection, uid) => {
 
     const collectionData = await db.collection(collection).doc(uid).get()
@@ -42,23 +47,48 @@ const translate = new Translate(
 export async function translateText(text,target, setTranslatedText) {
 
     let [translations] = await translate.translate(text, target);
-    console.log(translations)
+
     translations = Array.isArray(translations) ? translations : [translations];
     console.log('Translations:');
     translations.forEach((translation, i) => {
         console.log(`${text[i]} => (${target}) ${translation}`);
     });
 
-    setTranslatedText(prevState => ({...prevState, [target]: translations }))
+    setTranslatedText(prevState => ({...prevState, [target]: translations.join(',') }))
 }
 
-export const addToStorage = async (file) => {
+export const addToStorage = async (collection, file, id, data) => {
+    console.log()
     const storageRef = storage.ref()
 
-    console.log(file)
+    await storageRef.child(`default-deck/${id}/${id}.jpg`).put(file)
+
+    const imageUrl = await storageRef.child(`default-deck/${id}/${id}.jpg`).getDownloadURL()
+
+    console.log(data)
+    data[`imageUrl`] = imageUrl
+    console.log(data)
+
+     await db.collection(collection).doc(id).set(data)
+
+}
 
 
-    const uploadTask = await storageRef.child('images/cat.jpg').put(file)
+export const getCollectionData = async (collection, setData) => {
+    let resultArray = []
 
-    console.log(uploadTask)
+    db.collection(collection).onSnapshot((querySnapshot) => {
+
+         querySnapshot.forEach(doc => {
+
+             resultArray.push(doc.data())
+         })
+
+        setData(resultArray)
+
+
+    })
+
+
+
 }

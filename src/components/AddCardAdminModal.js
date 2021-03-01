@@ -4,7 +4,7 @@ import ReactCrop from 'react-image-crop'
 import 'react-image-crop/dist/ReactCrop.css';
 import '../scss/_AddCardAdminModal.scss'
 import axios from 'axios'
-import { translateText, addToStorage } from '../lib/library'
+import {translateText, addToStorage, ipaDict, convertToIpa} from '../lib/library'
 
 
 
@@ -13,9 +13,13 @@ const AddCardAdminModal = ({ showModal, setShowModal }) => {
     const [ toTranslateText, setToTranslateText ] = useState('')
     const [ translatedText, setTranslatedText ] = useState({})
     const [ uploadedImage, setUploadedImage ] = useState(null)
-    const [ imageArray, setImageArray ] = useState([])
+
     const [ isTranslateError, setIsTranslateError ] = useState(false)
     const [ isUnsplashError, setIsUnsplashError ] = useState(false)
+
+    const [ downloadedImage, setDownloadedImage ] = useState(null)
+
+    const [ data, setData ] = useState({})
 
     const [crop, setCrop] = useState({ unit: '%', width: 100, aspect: 1 / 1 });
     const [completedCrop, setCompletedCrop] = useState(null);
@@ -23,55 +27,56 @@ const AddCardAdminModal = ({ showModal, setShowModal }) => {
     const imgRef = useRef(null)
     const previewCanvasRef = useRef(null);
 
+    // let downloadedImage
+
     useEffect(() => {
-        if (!completedCrop || !previewCanvasRef.current || !imgRef.current) {
-            return;
+        if (completedCrop && previewCanvasRef.current && imgRef.current) {
+
+
+
+
+            const image = imgRef.current;
+            const canvas = previewCanvasRef.current;
+            const crop = completedCrop;
+
+            const scaleX = image.naturalWidth / image.width;
+            const scaleY = image.naturalHeight / image.height;
+            const ctx = canvas.getContext('2d');
+            const pixelRatio = window.devicePixelRatio;
+
+            canvas.width = crop.width * pixelRatio;
+            canvas.height = crop.height * pixelRatio;
+
+            ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+            ctx.imageSmoothingQuality = 'high';
+
+            ctx.drawImage(
+                image,
+                crop.x * scaleX,
+                crop.y * scaleY,
+                crop.width * scaleX,
+                crop.height * scaleY,
+                0,
+                0,
+                crop.width,
+                crop.height
+            );
         }
 
-        const image = imgRef.current;
-        const canvas = previewCanvasRef.current;
-        const crop = completedCrop;
 
-        const scaleX = image.naturalWidth / image.width;
-        const scaleY = image.naturalHeight / image.height;
-        const ctx = canvas.getContext('2d');
-        const pixelRatio = window.devicePixelRatio;
+        if(downloadedImage) {
 
-        canvas.width = crop.width * pixelRatio;
-        canvas.height = crop.height * pixelRatio;
+            downloadedImage.addEventListener('load', imageReceived, false)
 
-        ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
-        ctx.imageSmoothingQuality = 'high';
-
-        ctx.drawImage(
-            image,
-            crop.x * scaleX,
-            crop.y * scaleY,
-            crop.width * scaleX,
-            crop.height * scaleY,
-            0,
-            0,
-            crop.width,
-            crop.height
-        );
-    }, [completedCrop]);
-
-
-    const handleTranslateTextInput = (e) => setToTranslateText(e.target.value)
-
-    const handleTranslateText = (text, target) => {
-
-        if(text) {
-            target.forEach( targetLanguage => translateText(text, targetLanguage, setTranslatedText))
-            setIsTranslateError(false)
-            return
         }
 
-        setIsTranslateError(true)
-    }
+    }, [completedCrop, downloadedImage]);
+
+
+
     const handleHideModal = () => {
         setShowModal(false)
-        setImageArray([])
+
         setUploadedImage(null)
         setToTranslateText('')
         setTranslatedText({})
@@ -104,20 +109,31 @@ const AddCardAdminModal = ({ showModal, setShowModal }) => {
                 }
 
             }
-            let response = await axios.get(apiUrl,config)
-            console.log(response.data.results)
+            try {
+                let response = await axios.get(apiUrl,config)
+                console.log(response.data.results)
 
-            let arr = response.data.results.map( result => ({
-                image: result.urls.regular,
-                userName: `${result.user.first_name} ${result.user.last_name}`,
-                instagram: `https://instagram.com/${result.user.instagram_username}`
-            }))
+                let arr = response.data.results.map( result => ({
+                    image: result.urls.regular,
+                    userName: `${result.user.first_name} ${result.user.last_name}`,
+                    instagram: `https://instagram.com/${result.user.instagram_username}`
+                }))
 
-            setImageArray(arr)
-            
-            let randomNum = Math.floor(Math.random() * perPage)
-            setUploadedImage(arr[randomNum].image)
-            setIsUnsplashError(false)
+                let randomNum = Math.floor(Math.random() * perPage)
+
+
+                let tempImage = new Image()
+                tempImage.crossOrigin = 'Anonymous'
+                tempImage.src = arr[randomNum].image
+
+                setDownloadedImage(tempImage)
+
+
+                setIsUnsplashError(false)
+            } catch(err) {
+                console.log(err)
+            }
+
 
             return
         }
@@ -127,30 +143,99 @@ const AddCardAdminModal = ({ showModal, setShowModal }) => {
 
     }
 
+
+
+    const imageReceived = () => {
+
+        let canvas = document.createElement('canvas')
+        let ctx = canvas.getContext('2d')
+
+        canvas.width = downloadedImage.width
+        canvas.height = downloadedImage.height
+
+        ctx.drawImage(downloadedImage, 0, 0)
+
+        try {
+            localStorage.setItem('saved-image', canvas.toDataURL('image/png'))
+
+            setUploadedImage(localStorage.getItem('saved-image'))
+
+
+        }   catch(err) {
+            console.log('Error: ' + err)
+        }
+    }
+
     const handleSelectAudio = (e) => {
         console.log(e.target.files[0])
 
     }
 
-    const handleAddToStorage = async (canvas, file) => {
 
-
-
-
+    const romanizeWord = (word, targetLanguage) => {
+        switch(targetLanguage) {
+            case('zh'):
+                return 'romanized'
+            case('th'):
+                return 'thai romanized'
+            default:
+                return null
+        }
     }
-
-    function generateDownload(canvas, crop) {
+    function handleAddToStorage(canvas, crop) {
         if (!crop || !canvas) {
             return;
         }
 
+
+
+            let languageArray = []
+
+            console.log(translatedText)
+            for ( const targetLanguage in translatedText) {
+
+                let translatedWord = translatedText[targetLanguage]
+
+                languageArray.push({
+                    id: targetLanguage,
+                    word: translatedWord,
+                    ipa: convertToIpa(translatedWord, targetLanguage) || null,
+                    romanized: romanizeWord(translatedWord, targetLanguage),
+                    feminine: null,
+                    pronunciation: 'link to mp3 in firebase storage',
+                    verified: false
+                })
+            }
+
+            let data = {
+                id: toTranslateText,
+                word: toTranslateText,
+                languages: languageArray
+
+            }
+
+
+
         canvas.toBlob(
             (blob) => {
-               addToStorage(blob)
+               addToStorage('default-deck',blob,toTranslateText, data)
             },
             'image/png',
             1
         );
+    }
+
+    const handleTranslateTextInput = (e) => setToTranslateText(e.target.value)
+
+    const handleTranslateText = (text, target) => {
+
+        if(text) {
+            target.forEach( targetLanguage => translateText(text, targetLanguage, setTranslatedText))
+            setIsTranslateError(false)
+            return
+        }
+
+        setIsTranslateError(true)
     }
 
     return (
@@ -181,19 +266,19 @@ const AddCardAdminModal = ({ showModal, setShowModal }) => {
                         onComplete={(c) => setCompletedCrop(c)}
                     />
                 </div>
-                <div>
-                    <canvas
-                        ref={previewCanvasRef}
-                        // Rounding is important so the canvas width and height matches/is a multiple for sharpness.
-                        style={{
-                            width: Math.round(completedCrop?.width ?? 0),
-                            height: Math.round(completedCrop?.height ?? 0),
-                            display: 'none'
-                        }}
-                    />
-                </div>
 
-                <Button onClick={()=>handleTranslateText(toTranslateText, ['zh','es','vi'])}>Translate</Button>
+                <canvas
+                    ref={previewCanvasRef}
+                    // Rounding is important so the canvas width and height matches/is a multiple for sharpness.
+                    style={{
+                        width: Math.round(completedCrop?.width ?? 0),
+                        height: Math.round(completedCrop?.height ?? 0),
+                        display: 'none'
+                    }}
+                />
+
+
+                <Button onClick={()=>handleTranslateText(toTranslateText, ['zh','es','vi','en'])}>Translate</Button>
                 <div>
                     <span>Spanish:</span><Form.Control value={translatedText.es} placeholder="Spanish"></Form.Control>
                     <span>Chinese:</span><Form.Control value={translatedText.zh} placeholder="Chinese"></Form.Control>
@@ -201,10 +286,12 @@ const AddCardAdminModal = ({ showModal, setShowModal }) => {
                 </div>
                 {isTranslateError && <div className="error-message">Please key in your word</div>}
                 <Form.File accept="audio/*" onChange={handleSelectAudio} />
+                <div className="test-canvas"></div>
             </Modal.Body>
 
             <Modal.Footer>
-                <Button onClick={() => generateDownload(previewCanvasRef.current,crop)}>Test</Button>
+                {/*<Button onClick={startDownload}>Download</Button>*/}
+                <Button onClick={() => handleAddToStorage(previewCanvasRef.current,crop)}>Test</Button>
                 <Button onClick={handleHideModal}>Close</Button>
                 <Button>Add</Button>
             </Modal.Footer>

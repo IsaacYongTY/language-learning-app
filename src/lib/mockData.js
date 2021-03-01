@@ -81,24 +81,30 @@ export const mockData = [
 
 export const languageInfo = [
     {
-        languageName: 'English',
-        code: 'en',
+        name: 'English',
+        id: 'en',
         isGender: false,
         writingSystem: 'latin',
-        description: 'This is a description about the English language.'
 
     },
     {
-        languageName: 'chinese',
-        code: 'zh',
+        name: 'chinese',
+        id: 'zh',
         isGender: false,
         writingSystem: 'chineseCharacter',
         isPhonetic: true
     },
     {
-        languageName: 'spanish',
-        code: 'es',
+        name: 'spanish',
+        id: 'es',
         isGender: true,
+        writingSystem: 'latin'
+    },
+
+    {
+        name: 'vietnamese',
+        id: 'vi',
+        isGender: false,
         writingSystem: 'latin'
     }
 ]

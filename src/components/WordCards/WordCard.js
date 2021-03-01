@@ -12,7 +12,7 @@ const WordCard = ( { word, defaultTargetLanguages }) => {
 
 
     const translation = word.languages.map(language => (
-        displayLanguage.includes(language.code) &&
+        displayLanguage.includes(language.id) &&
 
         <LanguageSection language={language}/>
     ))
