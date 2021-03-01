@@ -1,6 +1,7 @@
 import React from 'react'
 import firebase from '../lib/firebase'
 import { useHistory } from 'react-router-dom'
+import { Button } from 'react-bootstrap'
 
 const LogoutButton = (props) => {
 
@@ -16,7 +17,7 @@ const LogoutButton = (props) => {
         })
     }
     return (
-        <button onClick={handleLogout}>Logout</button>
+        <Button variant="light" onClick={handleLogout}>Logout</Button>
     )
 }
 

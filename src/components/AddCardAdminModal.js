@@ -180,12 +180,11 @@ const AddCardAdminModal = ({ showModal, setShowModal }) => {
                 return null
         }
     }
+
     function handleAddToStorage(canvas, crop) {
         if (!crop || !canvas) {
             return;
         }
-
-
 
             let languageArray = []
 
@@ -216,7 +215,13 @@ const AddCardAdminModal = ({ showModal, setShowModal }) => {
 
         canvas.toBlob(
             (blob) => {
-               addToStorage('default-deck',blob,toTranslateText, data)
+               addToStorage('default-deck',blob,toTranslateText, data).then(() => {
+                   console.log('working')
+                   setTranslatedText({})
+                   setUploadedImage('')
+                   setToTranslateText('')
+
+               })
             },
             'image/png',
             1
@@ -247,7 +252,8 @@ const AddCardAdminModal = ({ showModal, setShowModal }) => {
                 <span>Word:</span>
                 <Form.Control
                     onChange={(e) => handleTranslateTextInput(e)}
-                    placeholder="testing"
+                    placeholder="bird.."
+                    value={toTranslateText}
                  />
 
 
@@ -278,9 +284,9 @@ const AddCardAdminModal = ({ showModal, setShowModal }) => {
 
                 <Button onClick={()=>handleTranslateText(toTranslateText, ['zh','es','vi','en'])}>Translate</Button>
                 <div>
-                    <span>Spanish:</span><Form.Control value={translatedText.es} placeholder="Spanish"></Form.Control>
-                    <span>Chinese:</span><Form.Control value={translatedText.zh} placeholder="Chinese"></Form.Control>
-                    <span>Vietnamese:</span><Form.Control value={translatedText.vi} placeholder="Vietnamese"></Form.Control>
+                    <span>Spanish:</span><Form.Control value={translatedText.es || ''} ></Form.Control>
+                    <span>Chinese:</span><Form.Control value={translatedText.zh || ''} ></Form.Control>
+                    <span>Vietnamese:</span><Form.Control value={translatedText.vi || ''} ></Form.Control>
                 </div>
                 {isTranslateError && <div className="error-message">Please key in your word</div>}
                 <Form.File accept="audio/*" onChange={handleSelectAudio} />
@@ -289,9 +295,9 @@ const AddCardAdminModal = ({ showModal, setShowModal }) => {
 
             <Modal.Footer>
                 {/*<Button onClick={startDownload}>Download</Button>*/}
-                <Button onClick={() => handleAddToStorage(previewCanvasRef.current,crop)}>Test</Button>
+                <Button >Test</Button>
                 <Button onClick={handleHideModal}>Close</Button>
-                <Button>Add</Button>
+                <Button onClick={() => handleAddToStorage(previewCanvasRef.current,crop)}>Add</Button>
             </Modal.Footer>
         </Modal>
     )

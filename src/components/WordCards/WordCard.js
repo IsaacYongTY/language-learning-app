@@ -16,7 +16,7 @@ const WordCard = ( { word, defaultTargetLanguages }) => {
 
 
     return (
-        <Col md={4} lg={3}>
+        <Col md={6} lg={4} className="mb-5 ">
             <Card>
 
                     <h4 className="text-center my-2">{word.id.toUpperCase()}</h4>

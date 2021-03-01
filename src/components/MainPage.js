@@ -11,7 +11,7 @@ import { getUserProfile, getCollectionData } from '../lib/library'
 
 import { Container } from 'react-bootstrap'
 
-const MainPage = (props) => {
+const MainPage = ({userProfile, setUserProfile, defaultTargetLanguages, setDefaultTargetLanguages}) => {
 
     const [ data, setData ] = useState([])
     const [ filteredData, setFilteredData ] = useState([])
@@ -19,8 +19,8 @@ const MainPage = (props) => {
     const [ isLogin, setIsLogin ] = useState(false)
     const [ showModal,setShowModal ] = useState(false)
 
-    const [ userProfile, setUserProfile ] = useState({})
-    const [ defaultTargetLanguages, setDefaultTargetLanguages ] = useState([])
+
+
 
     const history = useHistory()
 
@@ -37,6 +37,8 @@ const MainPage = (props) => {
                     setUserProfile(userProfile)
                     setDefaultTargetLanguages(userProfile.defaultTargetLanguages)
                     setIsLogin(true)
+
+                    console.log(userProfile)
 
 
                     getCollectionData('default-deck', setData)
@@ -61,8 +63,8 @@ const MainPage = (props) => {
             isLogin && (
                 <div>
                     <Header />
-                    {`Hi, ${userProfile.name}!`}
-                    <Container fluid >
+
+                    <Container fluid className="w-75">
                         <SearchBar
                             data={data}
                             setFilteredData={setFilteredData}

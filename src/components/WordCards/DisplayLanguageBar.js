@@ -20,8 +20,10 @@ const DisplayLanguageBar = ({displayLanguage, setDisplayLanguage, defaultTargetL
                 defaultTargetLanguages?.map((defaultLanguage => (
 
                 <Button
+                    className="mr-2"
                     onClick={() => handleToggleLanguage(defaultLanguage)}
                     variant={displayLanguage.includes(defaultLanguage) ? "dark" :"light"}
+
                 >
                     {defaultLanguage.toUpperCase()}
                 </Button>

@@ -7,7 +7,7 @@ import firebase from './firebase'
 const db = firebase.firestore()
 const storage = firebase.storage()
 
-export const capitalizeWord = (word) => word.split('').map((char, index) => !index ? char.toUpperCase() : char).join('')
+export const capitalizeWord = (words) => words.split(' ').map( word => word.split('').map((char, index) => !index ? char.toUpperCase() : char).join('')).join(' ')
 
 export const ipaDict = {
     en: ipaDictEnUs,
