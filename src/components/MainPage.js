@@ -60,7 +60,7 @@ const MainPage = ({userProfile, setUserProfile, defaultTargetLanguages, setDefau
 
     return (
 
-            isLogin && (
+            // isLogin && (
                 <div>
                     <Header />
 
@@ -82,7 +82,7 @@ const MainPage = ({userProfile, setUserProfile, defaultTargetLanguages, setDefau
                     />
 
                 </div>
-            )
+            // )
 
 
     )

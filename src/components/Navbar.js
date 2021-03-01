@@ -5,10 +5,9 @@ import '../scss/_Navbar.scss'
 const Navbar = (props) => {
 
     return (
-        <div className="navbar w-75">
-            <NavLink to="/" exact>Home</NavLink>
+        <div className="navbar w-50">
+            <NavLink to="/" >Home</NavLink>
             <NavLink to="/flashcard">Flash Cards</NavLink>
-            <NavLink to="/playground">Playground</NavLink>
             <NavLink to="/settings">Settings</NavLink>
         </div>
     )
