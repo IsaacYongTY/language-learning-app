@@ -20,6 +20,7 @@ const DisplayLanguageBar = ({displayLanguage, setDisplayLanguage, userTargetLang
                 userTargetLanguages?.map((userLanguage => (
 
                 <Button
+                    size="sm"
                     className="mr-2"
                     key={userLanguage}
                     onClick={() => handleToggleLanguage(userLanguage)}

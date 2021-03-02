@@ -57,6 +57,7 @@ const SettingPage = ({userProfile, setUserProfile, systemTargetLanguages, setSys
                                     />
                                     <Form.Check.Label>{`${lang.name}`} <Badge
                                         variant="secondary">{lang.id.toUpperCase()}</Badge></Form.Check.Label>
+                                    {!lang.isSupported && <span className="error-message">(coming soon)</span>}
                                 </Form.Check>
                             </div>
                         </Col>

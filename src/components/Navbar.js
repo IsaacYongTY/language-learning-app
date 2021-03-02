@@ -7,7 +7,8 @@ const Navbar = (props) => {
     return (
         <div className="navbar w-50">
             <NavLink to="/" >Home</NavLink>
-            <NavLink to="/flashcard">Flash Cards</NavLink>
+            <NavLink to="/default-deck">Default Deck</NavLink>
+            <NavLink to="/user-decks">User Decks</NavLink>
 
         </div>
     )
