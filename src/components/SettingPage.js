@@ -1,39 +1,62 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import Header from "./Header";
 import { Container, Button, Badge, Row, Col, Form } from "react-bootstrap";
-import { capitalizeWord } from "../lib/library";
+import {capitalizeWord, saveUserTargetLanguages} from "../lib/library";
 
 
-const SettingPage = ({userProfile, setUserProfile}) => {
+const SettingPage = ({userProfile, setUserProfile, systemTargetLanguages, setSystemTargetLanguages}) => {
+
+
+    const [ selectedTargetLanguages, setSelectedTargetLanguages ] = useState([...userProfile.userTargetLanguages])
+    const [ isMaxed, setIsMaxed ] = useState(false)
 
     useEffect(() => {
         console.log(userProfile)
-    })
+        console.log(selectedTargetLanguages)
+        console.log(systemTargetLanguages[1].emoji)
+    },[selectedTargetLanguages])
+
     let { name } = userProfile
 
-    let supportedLanguages = [
-        {'en': 'english' },
-        {'zh': 'chinese simplified'},
-        {'vi': 'vietnamese'},
-        {'es': 'spanish'},
-        {'ma': 'malay'},
-        {'ja': 'japanese'},
-        {'ig': 'igbo'}]
+    const maxLanguageCount = 5
 
+    const handleSelectLanguages = (lang) => {
 
+        if(selectedTargetLanguages.length === maxLanguageCount && !selectedTargetLanguages.includes(lang.id)) {
+            setIsMaxed(true)
+            return
+        }
+
+        selectedTargetLanguages.includes(lang.id)
+            ?
+            setSelectedTargetLanguages(prevState => prevState.filter(selectedLang => selectedLang !== lang.id))
+            :
+            setSelectedTargetLanguages(prevState => [...prevState, lang.id])
+
+        setIsMaxed(false)
+
+    }
+
+    const handleSaveSettings = () => {
+        saveUserTargetLanguages('users', userProfile.id, selectedTargetLanguages)
+    }
     const generateLanguageCol = (supportedLanguages) => {
 
 
         return supportedLanguages.map(lang => {
-            for (const element in lang) {
+
                 return (
                     <>
                         <Col>
                             <div className="mb-3">
                                 <Form.Check>
-                                    <Form.Check.Input/>
-                                    <Form.Check.Label>{`${capitalizeWord(lang[element])}`} <Badge
-                                        variant="secondary">{element.toUpperCase()}</Badge></Form.Check.Label>
+                                    <Form.Check.Input
+                                        disabled={!lang.isSupported}
+                                        checked={selectedTargetLanguages.includes(lang.id)}
+                                        onClick={() => handleSelectLanguages(lang)}
+                                    />
+                                    <Form.Check.Label>{`${lang.name}`} <Badge
+                                        variant="secondary">{lang.id.toUpperCase()}</Badge></Form.Check.Label>
                                 </Form.Check>
                             </div>
                         </Col>
@@ -42,7 +65,7 @@ const SettingPage = ({userProfile, setUserProfile}) => {
 
                     </>
                 )
-            }
+
         })
     }
 
@@ -77,15 +100,15 @@ const SettingPage = ({userProfile, setUserProfile}) => {
 
     return (
         <>
-            <Header />
+
             <Container className="w-75 mt-5">
 
                 <p>Name: {name} <Button>Change Name</Button></p>
-                <p>Default Target Languages (maximum 5):</p>
-
+                <p>Default Target Languages (maximum 5): {isMaxed && <span>You have reached the maximum</span>}</p>
+                {systemTargetLanguages[1].emoji}
                 <Row>
                     {
-                        supportedLanguageSingleCols(supportedLanguages)
+                        supportedLanguageSingleCols(systemTargetLanguages)
                             .map( col => (
                                 <Col lg={3}>
                                     {generateLanguageCol(col)}
@@ -94,7 +117,7 @@ const SettingPage = ({userProfile, setUserProfile}) => {
                     }
                 </Row>
 
-                <Button>Save Settings</Button>
+                <Button onClick={handleSaveSettings}>Save Settings</Button>
 
 
 

@@ -25,6 +25,7 @@ const LoginPage = (props) => {
         let { email, password } = values
         firebase.auth().signInWithEmailAndPassword(email, password).then((response) => {
             console.log('login successful')
+
             history.push('/')
 
 

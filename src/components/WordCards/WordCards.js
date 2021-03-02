@@ -5,7 +5,7 @@ import WordCard from './WordCard'
 import '../../scss/_WordCards.scss'
 import { Row } from 'react-bootstrap'
 
-const WordCards = ({ data, defaultTargetLanguages }) => {
+const WordCards = ({ data, userTargetLanguages }) => {
 
     return (
         <Row className="word-cards">
@@ -13,7 +13,7 @@ const WordCards = ({ data, defaultTargetLanguages }) => {
                 data.map(word => (
                     <WordCard
                         word={word}
-                        defaultTargetLanguages={defaultTargetLanguages}
+                        userTargetLanguages={userTargetLanguages}
                     />
                 ))
             }

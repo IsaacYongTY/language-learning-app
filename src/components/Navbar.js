@@ -8,7 +8,7 @@ const Navbar = (props) => {
         <div className="navbar w-50">
             <NavLink to="/" >Home</NavLink>
             <NavLink to="/flashcard">Flash Cards</NavLink>
-            <NavLink to="/settings">Settings</NavLink>
+
         </div>
     )
 }

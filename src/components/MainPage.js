@@ -7,11 +7,11 @@ import WordCards from './WordCards/WordCards'
 import SearchBar from "./SearchBar";
 import AddCardAdminModal from './AddCardAdminModal'
 
-import { getUserProfile, getCollectionData } from '../lib/library'
+import {getUserProfile, getCollectionData, getTargetLanguages} from '../lib/library'
 
 import { Container } from 'react-bootstrap'
 
-const MainPage = ({userProfile, setUserProfile, defaultTargetLanguages, setDefaultTargetLanguages}) => {
+const MainPage = ({userProfile, setUserProfile, userTargetLanguages, setUserTargetLanguages, setSystemTargetLanguages}) => {
 
     const [ data, setData ] = useState([])
     const [ filteredData, setFilteredData ] = useState([])
@@ -26,32 +26,41 @@ const MainPage = ({userProfile, setUserProfile, defaultTargetLanguages, setDefau
 
     useEffect(() => {
 
-        firebase.auth().onAuthStateChanged( user => {
+        if(!isLogin) {
+            firebase.auth().onAuthStateChanged( user => {
 
 
-            if(!user) {
-                history.push('/login')
-            } else {
+                if(!user) {
+                    history.push('/login')
+                } else {
 
-                getUserProfile('users', user.uid, setUserProfile).then((userProfile) => {
-                    setUserProfile(userProfile)
-                    setDefaultTargetLanguages(userProfile.defaultTargetLanguages)
-                    setIsLogin(true)
+                    getUserProfile('users', user.uid, setUserProfile).then((response) => {
+                        console.log(response)
 
-                    console.log(userProfile)
+                    })
 
+                    getTargetLanguages('target-languages').then((response) => {
+                        setSystemTargetLanguages(response)
+                    })
 
                     getCollectionData('default-deck', setData)
 
+                    setIsLogin(true)
+
+                }
 
 
-                })
+
+            })
+
+        }
+
+        console.log(userProfile)
+        setUserTargetLanguages(userProfile.userTargetLanguages)
 
 
-            }
-        })
 
-    }, [])
+    }, [userProfile])
 
     const fetchData = async () => {
         let result = await getCollectionData('default-deck', setData)
@@ -62,7 +71,7 @@ const MainPage = ({userProfile, setUserProfile, defaultTargetLanguages, setDefau
 
             // isLogin && (
                 <div>
-                    <Header />
+
 
                     <Container fluid className="w-75">
                         <SearchBar
@@ -72,7 +81,7 @@ const MainPage = ({userProfile, setUserProfile, defaultTargetLanguages, setDefau
                         />
                         <WordCards
                             data={filteredData.length > 0 ? filteredData : data}
-                            defaultTargetLanguages={defaultTargetLanguages}
+                            userTargetLanguages={userTargetLanguages}
                         />
                     </Container>
 

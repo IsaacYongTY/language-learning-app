@@ -1,21 +1,24 @@
 import React  from 'react'
 import '../scss/_Header.scss'
-import { Row, Col } from 'react-bootstrap'
-import LogoutButton from './LogoutButton'
+import { Row, Col, Dropdown, DropdownButton } from 'react-bootstrap'
 import Navbar from './Navbar'
+import HeaderDropdownMenu from "./HeaderDropdownMenu";
 
-const Header = (props) => {
+const Header = ({ userProfile }) => {
 
+    console.log(userProfile)
     return (
         <Row className="header">
             <Col md={1} className="logo">SANBAI</Col>
-            <Col md={10}>
+            <Col md={9}>
                 <Navbar />
             </Col>
 
 
-            <Col className="d-flex justify-content-end ">
-                <LogoutButton />
+            <Col className="d-flex justify-content-end">
+                <HeaderDropdownMenu
+                    userProfile={userProfile}
+                />
             </Col>
 
 
