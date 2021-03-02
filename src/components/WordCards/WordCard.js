@@ -8,10 +8,10 @@ const WordCard = ( { word, userTargetLanguages }) => {
 
     const [displayLanguage, setDisplayLanguage] = useState([])
 
-    const translation = word.languages.map(translatedWord => (
+    const translation = word.languages.map((translatedWord, index) => (
         displayLanguage.includes(translatedWord.id) &&
 
-        <LanguageSection key={word.id} translatedWord={translatedWord}/>
+        <LanguageSection key={index} translatedWord={translatedWord} userTargetLanguages={userTargetLanguages}/>
     ))
 
 

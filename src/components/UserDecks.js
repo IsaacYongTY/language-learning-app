@@ -1,6 +1,6 @@
 import React  from 'react'
 import Header from './Header'
-const FlashCards = (props) => {
+const UserDecks = (props) => {
 
     return (
         <div>
@@ -10,4 +10,4 @@ const FlashCards = (props) => {
     )
 }
 
-export default FlashCards
+export default UserDecks

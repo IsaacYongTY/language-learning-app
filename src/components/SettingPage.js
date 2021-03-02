@@ -1,81 +1,70 @@
 import React, { useEffect, useState } from 'react'
-import Header from "./Header";
+
 import { Container, Button, Badge, Row, Col, Form } from "react-bootstrap";
-import {capitalizeWord, saveUserTargetLanguages} from "../lib/library";
+import { saveUserTargetLanguages } from "../lib/library";
 
 
 const SettingPage = ({userProfile, setUserProfile, systemTargetLanguages, setSystemTargetLanguages}) => {
-
 
     const [ selectedTargetLanguages, setSelectedTargetLanguages ] = useState([...userProfile.userTargetLanguages])
     const [ isMaxed, setIsMaxed ] = useState(false)
 
     useEffect(() => {
-        console.log(userProfile)
-        console.log(selectedTargetLanguages)
-        console.log(systemTargetLanguages[1].emoji)
+
     },[selectedTargetLanguages])
 
     let { name } = userProfile
 
-    const maxLanguageCount = 5
+    const maxLanguageCount = userProfile.status === 'admin' ? 100 : 5
 
     const handleSelectLanguages = (lang) => {
 
-        if(selectedTargetLanguages.length === maxLanguageCount && !selectedTargetLanguages.includes(lang.id)) {
+        if(selectedTargetLanguages.length === maxLanguageCount && !selectedTargetLanguages.find(targetLanguage => targetLanguage.id === lang.id)) {
             setIsMaxed(true)
             return
         }
 
-        selectedTargetLanguages.includes(lang.id)
+        selectedTargetLanguages.find(targetLanguage => targetLanguage.id === lang.id)
             ?
-            setSelectedTargetLanguages(prevState => prevState.filter(selectedLang => selectedLang !== lang.id))
+            setSelectedTargetLanguages(prevState => prevState.filter(selectedLang => selectedLang.id !== lang.id))
             :
-            setSelectedTargetLanguages(prevState => [...prevState, lang.id])
+            setSelectedTargetLanguages(prevState => [...prevState, lang])
 
         setIsMaxed(false)
 
     }
 
-    const handleSaveSettings = () => {
-        saveUserTargetLanguages('users', userProfile.id, selectedTargetLanguages)
-    }
-    const generateLanguageCol = (supportedLanguages) => {
+    const handleSaveSettings = () => saveUserTargetLanguages('users', userProfile.id, selectedTargetLanguages)
 
+    const generateLanguageCol = (supportedLanguages) =>
+        supportedLanguages
+            .map(lang => (
 
-        return supportedLanguages.map(lang => {
+                <Col>
+                    <div className="mb-3">
+                        <Form.Check>
+                            <Form.Check.Input
+                                disabled={!lang.isSupported}
+                                checked={selectedTargetLanguages.find(targetLanguage => targetLanguage.id === lang.id)}
+                                onClick={() => handleSelectLanguages(lang)}
+                            />
+                            <Form.Check.Label>{`${lang.name}`} <Badge
+                                variant="secondary">{lang.id.toUpperCase()}</Badge></Form.Check.Label>
+                            {!lang.isSupported && <span className="error-message">(coming soon)</span>}
+                        </Form.Check>
+                    </div>
+                </Col>
 
-                return (
-                    <>
-                        <Col>
-                            <div className="mb-3">
-                                <Form.Check>
-                                    <Form.Check.Input
-                                        disabled={!lang.isSupported}
-                                        checked={selectedTargetLanguages.includes(lang.id)}
-                                        onClick={() => handleSelectLanguages(lang)}
-                                    />
-                                    <Form.Check.Label>{`${lang.name}`} <Badge
-                                        variant="secondary">{lang.id.toUpperCase()}</Badge></Form.Check.Label>
-                                    {!lang.isSupported && <span className="error-message">(coming soon)</span>}
-                                </Form.Check>
-                            </div>
-                        </Col>
-
-
-
-                    </>
                 )
+        )
 
-        })
-    }
 
     let supportedLanguageSingleCols = (supportedLanguages) => {
 
         let langPerRow = 5
         let resultArray = []
 
-        return supportedLanguages.reduce((acc, element, index, array ) => {
+        return supportedLanguages.reduce((acc, element, index ) => {
 
             resultArray.push(element)
 
@@ -97,36 +86,26 @@ const SettingPage = ({userProfile, setUserProfile, systemTargetLanguages, setSys
         })
     }
 
-
-
     return (
-        <>
+        <Container className="w-75 mt-5">
 
-            <Container className="w-75 mt-5">
+            <p>Name: {name} <Button>Change Name</Button></p>
+            <p>Default Target Languages (maximum 5): {isMaxed && <span>You have reached the maximum</span>}</p>
+            {systemTargetLanguages[1].emoji}
+            <Row>
+                {
+                    supportedLanguageSingleCols(systemTargetLanguages)
+                        .map( col => (
+                            <Col lg={3}>
+                                {generateLanguageCol(col)}
+                            </Col>
+                        ))
+                }
+            </Row>
 
-                <p>Name: {name} <Button>Change Name</Button></p>
-                <p>Default Target Languages (maximum 5): {isMaxed && <span>You have reached the maximum</span>}</p>
-                {systemTargetLanguages[1].emoji}
-                <Row>
-                    {
-                        supportedLanguageSingleCols(systemTargetLanguages)
-                            .map( col => (
-                                <Col lg={3}>
-                                    {generateLanguageCol(col)}
-                                </Col>
-                            ))
-                    }
-                </Row>
+            <Button onClick={handleSaveSettings}>Save Settings</Button>
 
-                <Button onClick={handleSaveSettings}>Save Settings</Button>
-
-
-
-
-
-            </Container>
-        </>
-
+        </Container>
     )
 }
 

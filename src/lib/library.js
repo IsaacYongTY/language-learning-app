@@ -2,6 +2,10 @@ import ipaDictEnUs from 'ipa-dict/lib/en_US'
 import ipaDictEs from 'ipa-dict/lib/es_ES'
 import ipaDictZhHans from 'ipa-dict/lib/zh_hans'
 import ipaDictVi from 'ipa-dict/lib/vi_S'
+import ipaDictFr from 'ipa-dict/lib/fr_FR'
+import ipaDictJa from 'ipa-dict/lib/ja'
+import ipaDictKo from 'ipa-dict/lib/ko'
+
 import firebase from './firebase'
 
 const db = firebase.firestore()
@@ -13,12 +17,17 @@ export const ipaDict = {
     en: ipaDictEnUs,
     es: ipaDictEs,
     zh: ipaDictZhHans,
-    vi: ipaDictVi
+    vi: ipaDictVi,
+    fr: ipaDictFr,
+    ja: ipaDictJa,
+    ko: ipaDictKo
+
 }
 
 export const convertToIpa = (words, targetLanguage) => {
-
-    return words.split(' ').map(word => ipaDict[targetLanguage].get(word)).join(' ')
+    console.log(words)
+    console.log(targetLanguage)
+    return words.split(' ').map(word => ipaDict[targetLanguage]?.get(word)).join(' ')
 }
 
 
@@ -43,25 +52,33 @@ export async function translateText(text,target, setTranslatedText) {
         console.log(`${text[i]} => (${target}) ${translation}`);
     });
 
-    setTranslatedText(prevState => ({...prevState, [target]: translations.join(',') }))
+
+    setTranslatedText(prevState => (
+        [
+
+            ...prevState,
+            {
+                id: target,
+                word: translations.join(','),
+                ipa: convertToIpa(translations.join(','), target)
+            }
+
+        ]
+    ))
 }
 
 
-export const addToStorage = async (collection, file, id, data) => {
-    console.log()
+export const addToStorage = async (collection, blob, id, data) => {
+
     const storageRef = storage.ref()
 
-    await storageRef.child(`default-deck/${id}/${id}.jpg`).put(file)
+    await storageRef.child(`default-deck/${id}/${id}.jpg`).put(blob)
 
     const imageUrl = await storageRef.child(`default-deck/${id}/${id}.jpg`).getDownloadURL()
 
+    data[`imageUrl`] = imageUrl
 
-
-        data[`imageUrl`] = imageUrl
-
-
-
-     await db.collection(collection).doc(id).set(data)
+    await db.collection(collection).doc(id).set(data)
 
 }
 

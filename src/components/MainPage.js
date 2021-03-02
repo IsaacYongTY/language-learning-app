@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import firebase from '../lib/firebase'
 import { useHistory } from 'react-router-dom'
 
-import Header from './Header'
 import WordCards from './WordCards/WordCards'
 import SearchBar from "./SearchBar";
 import AddCardAdminModal from './AddCardAdminModal'
@@ -48,9 +47,6 @@ const MainPage = ({userProfile, setUserProfile, userTargetLanguages, setUserTarg
                     setIsLogin(true)
 
                 }
-
-
-
             })
 
         }
@@ -58,42 +54,32 @@ const MainPage = ({userProfile, setUserProfile, userTargetLanguages, setUserTarg
         console.log(userProfile)
         setUserTargetLanguages(userProfile.userTargetLanguages)
 
-
-
     }, [userProfile])
 
-    const fetchData = async () => {
-        let result = await getCollectionData('default-deck', setData)
-        console.log(result)
-    }
+
 
     return (
+        <div>
+            <Container fluid className="w-75">
+                <SearchBar
+                    data={data}
+                    setFilteredData={setFilteredData}
+                    setShowModal={setShowModal}
+                    userProfile={userProfile}
+                />
+                <WordCards
+                    data={filteredData.length > 0 ? filteredData : data}
+                    userTargetLanguages={userTargetLanguages}
+                />
+            </Container>
 
-            // isLogin && (
-                <div>
-
-
-                    <Container fluid className="w-75">
-                        <SearchBar
-                            data={data}
-                            setFilteredData={setFilteredData}
-                            setShowModal={setShowModal}
-                        />
-                        <WordCards
-                            data={filteredData.length > 0 ? filteredData : data}
-                            userTargetLanguages={userTargetLanguages}
-                        />
-                    </Container>
-
-                    <AddCardAdminModal
-                        showModal={showModal}
-                        setShowModal={setShowModal}
-                    />
-
-                </div>
-            // )
-
-
+            <AddCardAdminModal
+                showModal={showModal}
+                setShowModal={setShowModal}
+                userProfile={userProfile}
+                userTargetLanguages={userTargetLanguages}
+            />
+        </div>
     )
 }
 

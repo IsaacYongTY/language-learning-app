@@ -3,15 +3,13 @@ import { Button } from "react-bootstrap";
 import '../../scss/_DisplayLanguageBar.scss'
 
 const DisplayLanguageBar = ({displayLanguage, setDisplayLanguage, userTargetLanguages}) => {
-
+    console.log(userTargetLanguages)
     const handleToggleLanguage = (language) => {
-
         !displayLanguage.includes(language)
             ?
             setDisplayLanguage(prevState => [...prevState, language])
             :
             setDisplayLanguage(prevState => prevState.filter( selectedLanguage => selectedLanguage !== language ))
-
     }
 
     return (
@@ -22,12 +20,12 @@ const DisplayLanguageBar = ({displayLanguage, setDisplayLanguage, userTargetLang
                 <Button
                     size="sm"
                     className="mr-2"
-                    key={userLanguage}
-                    onClick={() => handleToggleLanguage(userLanguage)}
-                    variant={displayLanguage.includes(userLanguage) ? "dark" :"light"}
+                    key={userLanguage.id}
+                    onClick={() => handleToggleLanguage(userLanguage.id)}
+                    variant={displayLanguage.includes(userLanguage.id) ? "dark" :"light"}
 
                 >
-                    {userLanguage.toUpperCase()}
+                    {userLanguage.id.toUpperCase()}
                 </Button>
 
             )))}

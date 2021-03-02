@@ -1,13 +1,12 @@
 import './App.scss';
+import React, { useState, useEffect } from "react";
 import { BrowserRouter, Switch, Route, useHistory } from 'react-router-dom'
+
 import LoginPage from './components/LoginPage'
 import MainPage from './components/MainPage'
-import FlashCards from "./components/FlashCards";
+import UserDecks from "./components/UserDecks";
 import Playground from './components/Playground'
 import SettingPage from "./components/SettingPage";
-import React, { useState, useEffect } from "react";
-import firebase from "./lib/firebase";
-import {getCollectionData, getUserProfile} from "./lib/library";
 import Header from "./components/Header";
 
 function App() {
@@ -40,8 +39,8 @@ function App() {
                 <LoginPage setUserProfile/>
             </Route>
 
-            <Route path="/flashcard">
-                <FlashCards  />
+            <Route path="/user-decks">
+                <UserDecks  />
             </Route>
 
             <Route path="/playground">

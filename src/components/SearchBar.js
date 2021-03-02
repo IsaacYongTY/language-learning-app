@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { Row, Form, Button } from 'react-bootstrap'
 
-const SearchBar = ( { data, setFilteredData, setShowModal }) => {
+const SearchBar = ( { data, setFilteredData, setShowModal, userProfile }) => {
 
 
     useEffect(() => {
@@ -20,7 +20,7 @@ const SearchBar = ( { data, setFilteredData, setShowModal }) => {
                 placeholder="Search for..."
             />
 
-            <Button onClick={() => setShowModal(true)}> + Add New</Button>
+            { userProfile.status === 'admin' && <Button variant="danger" onClick={() => setShowModal(true)}> + Add New (Admin only)</Button>}
         </Row>
     )
 }

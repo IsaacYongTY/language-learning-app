@@ -1,5 +1,5 @@
 import React, {useCallback, useRef, useState, useEffect} from 'react'
-import {Button, Form, Modal} from "react-bootstrap";
+import {Button, Form, Modal, ButtonToolbar, Row, Col} from "react-bootstrap";
 import ReactCrop from 'react-image-crop'
 import 'react-image-crop/dist/ReactCrop.css';
 import '../scss/_AddCardAdminModal.scss'
@@ -8,10 +8,10 @@ import {translateText, addToStorage, convertToIpa} from '../lib/library'
 
 
 
-const AddCardAdminModal = ({ showModal, setShowModal }) => {
+const AddCardAdminModal = ({ showModal, setShowModal, userProfile, userTargetLanguages }) => {
 
     const [ toTranslateText, setToTranslateText ] = useState('')
-    const [ translatedText, setTranslatedText ] = useState({})
+    const [ translatedText, setTranslatedText ] = useState([])
     const [ uploadedImage, setUploadedImage ] = useState(null)
 
     const [ isTranslateError, setIsTranslateError ] = useState(false)
@@ -19,19 +19,14 @@ const AddCardAdminModal = ({ showModal, setShowModal }) => {
 
     const [ downloadedImage, setDownloadedImage ] = useState(null)
 
-    const [crop, setCrop] = useState({ unit: '%', width: 100, aspect: 1 / 1 });
+    const [crop, setCrop] = useState({ unit: '%', width: 80, aspect: 1 / 1 });
     const [completedCrop, setCompletedCrop] = useState(null);
 
     const imgRef = useRef(null)
     const previewCanvasRef = useRef(null);
 
-    // let downloadedImage
-
     useEffect(() => {
         if (completedCrop && previewCanvasRef.current && imgRef.current) {
-
-
-
 
             const image = imgRef.current;
             const canvas = previewCanvasRef.current;
@@ -63,9 +58,7 @@ const AddCardAdminModal = ({ showModal, setShowModal }) => {
 
 
         if(downloadedImage) {
-
             downloadedImage.addEventListener('load', imageReceived, false)
-
         }
 
     }, [completedCrop, downloadedImage]);
@@ -74,14 +67,14 @@ const AddCardAdminModal = ({ showModal, setShowModal }) => {
 
     const handleHideModal = () => {
         setShowModal(false)
-
         setUploadedImage(null)
         setToTranslateText('')
-        setTranslatedText({})
+        setTranslatedText([])
+        setIsUnsplashError(false)
+        setIsTranslateError(false)
     }
 
     const handleSelectFile = (e) => {
-        console.log(e.target.files)
         if(e.target.files && e.target.files.length > 0) {
             const reader = new FileReader()
             reader.addEventListener('load',() => setUploadedImage(reader.result))
@@ -103,13 +96,11 @@ const AddCardAdminModal = ({ showModal, setShowModal }) => {
                 headers: {
                     Authorization: `Client-ID ${process.env.REACT_APP_UNSPLASH_APIKEY}`,
                     'Access-Control-Allow-Origin': '*'
-
                 }
-
             }
+
             try {
                 let response = await axios.get(apiUrl,config)
-                console.log(response.data.results)
 
                 let arr = response.data.results.map( result => ({
                     image: result.urls.regular,
@@ -119,20 +110,15 @@ const AddCardAdminModal = ({ showModal, setShowModal }) => {
 
                 let randomNum = Math.floor(Math.random() * perPage)
 
-
                 let tempImage = new Image()
                 tempImage.crossOrigin = 'Anonymous'
                 tempImage.src = arr[randomNum].image
 
                 setDownloadedImage(tempImage)
-
-
                 setIsUnsplashError(false)
             } catch(err) {
                 console.log(err)
             }
-
-
             return
         }
 
@@ -158,7 +144,6 @@ const AddCardAdminModal = ({ showModal, setShowModal }) => {
 
             setUploadedImage(localStorage.getItem('saved-image'))
 
-
         }   catch(err) {
             console.log('Error: ' + err)
         }
@@ -168,7 +153,6 @@ const AddCardAdminModal = ({ showModal, setShowModal }) => {
         console.log(e.target.files[0])
 
     }
-
 
     const romanizeWord = (word, targetLanguage) => {
         switch(targetLanguage) {
@@ -186,41 +170,36 @@ const AddCardAdminModal = ({ showModal, setShowModal }) => {
             return;
         }
 
-            let languageArray = []
-
-            console.log(translatedText)
-            for ( const targetLanguage in translatedText) {
-
-                let translatedWord = translatedText[targetLanguage]
-
-                languageArray.push({
-                    id: targetLanguage,
-                    word: translatedWord,
-                    ipa: convertToIpa(translatedWord, targetLanguage) || null,
-                    romanized: romanizeWord(translatedWord, targetLanguage),
-                    feminine: null,
-                    pronunciation: 'link to mp3 in firebase storage',
-                    verified: false
-                })
-            }
-
-            let data = {
-                id: toTranslateText,
-                word: toTranslateText,
-                languages: languageArray
-
-            }
+        let languageArray = []
 
 
+        translatedText.forEach(language => {
+
+            let { id, word, ipa } = language
+            languageArray.push({
+                id,
+                word,
+                ipa: ipa || null,
+                romanized: null,
+                feminine: null,
+                pronunciation: 'link to mp3 in firebase storage',
+                verified: false
+            })
+        })
+
+        let data = {
+            id: toTranslateText,
+            word: toTranslateText,
+            languages: languageArray
+
+        }
 
         canvas.toBlob(
             (blob) => {
                addToStorage('default-deck',blob,toTranslateText, data).then(() => {
-                   console.log('working')
-                   setTranslatedText({})
+                   setTranslatedText([])
                    setUploadedImage('')
                    setToTranslateText('')
-
                })
             },
             'image/png',
@@ -231,72 +210,107 @@ const AddCardAdminModal = ({ showModal, setShowModal }) => {
     const handleTranslateTextInput = (e) => setToTranslateText(e.target.value)
 
     const handleTranslateText = (text, target) => {
-
         if(text) {
-            target.forEach( targetLanguage => translateText(text, targetLanguage, setTranslatedText))
+            console.log(target)
+            target.forEach( targetLanguage => translateText(text, targetLanguage.id, setTranslatedText))
             setIsTranslateError(false)
             return
         }
-
         setIsTranslateError(true)
     }
 
+    console.log(userProfile.userTargetLanguages)
+    console.log(translatedText)
+    const translationTextbox = (
+
+        userProfile.userTargetLanguages?.map(targetLanguage => (
+                <Row>
+                    <Col>
+                        <p className="mb-1">{targetLanguage.name}:</p>
+                        <Form.Control className="mb-2" value={translatedText.find( text => text.id ===targetLanguage.id)?.word || ''} ></Form.Control>
+                    </Col>
+                    <Col>
+                        <p className="mb-1">IPA:</p>
+                        <Form.Control className="mb-2" value={translatedText.find( text => text.id ===targetLanguage.id)?.ipa || ''} ></Form.Control>
+                    </Col>
+                </Row>
+
+        ))
+
+    )
     return (
-        <Modal className="add-card-admin-modal" show={showModal} onHide={handleHideModal} size='lg'>
+        <Modal className="add-card-admin-modal" show={showModal} onHide={handleHideModal} size='xl'>
             <Modal.Header closeButton>
                 <Modal.Title>Add new card</Modal.Title>
             </Modal.Header>
 
             <Modal.Body>
+                <Row>
 
-                <span>Word:</span>
-                <Form.Control
-                    onChange={(e) => handleTranslateTextInput(e)}
-                    placeholder="bird.."
-                    value={toTranslateText}
-                 />
+                    <Col lg={8}>
+                        <p className="mb-1">Word:</p>
+                        <Form.Control
+                            onChange={(e) => handleTranslateTextInput(e)}
+                            placeholder="bird.."
+                            value={toTranslateText}
+                         />
+
+                        <div className="image-container my-3">
+                            <ReactCrop
+                                src={uploadedImage}
+                                onImageLoaded={onLoad}
+                                crop={crop}
+                                onChange={(c) => setCrop(c)}
+                                onComplete={(c) => setCompletedCrop(c)}
+                            />
+                        </div>
+
+                        <ButtonToolbar className="justify-content-around align-items-center">
+                            <div className="d-flex align-items-center">
+                                <Button onClick={() => handleGetUnsplashImage(toTranslateText)}>Get from Unsplash</Button>
+
+                                {isUnsplashError && <div className="error-message">Please key in your word</div>}
+                            </div>
+
+                            <Form.File accept="image/*" onChange={(e) => handleSelectFile(e)}  />
+
+                        </ButtonToolbar>
+
+                        <canvas
+                            ref={previewCanvasRef}
+                            // Rounding is important so the canvas width and height matches/is a multiple for sharpness.
+                            style={{
+                                width: Math.round(completedCrop?.width ?? 0),
+                                height: Math.round(completedCrop?.height ?? 0),
+                                display: 'none'
+                            }}
+                        />
+
+                </Col>
+                <Col lg={4}>
+                    <div className="my-3">
+
+                        {translationTextbox}
+                    </div>
+
+                    <ButtonToolbar className="justify-content-between align-items-center">
+                        <div className="d-flex align-items-center">
+                            <Button onClick={()=>handleTranslateText(toTranslateText, userTargetLanguages)}>Translate</Button>
+                            {isTranslateError && <div className="error-message">Please key in your word</div>}
+                        </div>
+
+                        <Form.File accept="audio/*" id="choose-audio" onChange={handleSelectAudio} data-buttonText="Choose Audio"/>
+                    </ButtonToolbar>
+                </Col>
+            </Row>
 
 
-                <Button onClick={() => handleGetUnsplashImage(toTranslateText)}>Get from Unsplash</Button>
-
-                {isUnsplashError && <div className="error-message">Please key in your word</div>}
-                <Form.File accept="image/*" onChange={(e) => handleSelectFile(e)}/>
-                <div className="image-container my-3">
-                    <ReactCrop
-                        src={uploadedImage}
-                        onImageLoaded={onLoad}
-                        crop={crop}
-                        onChange={(c) => setCrop(c)}
-                        onComplete={(c) => setCompletedCrop(c)}
-                    />
-                </div>
-
-                <canvas
-                    ref={previewCanvasRef}
-                    // Rounding is important so the canvas width and height matches/is a multiple for sharpness.
-                    style={{
-                        width: Math.round(completedCrop?.width ?? 0),
-                        height: Math.round(completedCrop?.height ?? 0),
-                        display: 'none'
-                    }}
-                />
-
-
-                <Button onClick={()=>handleTranslateText(toTranslateText, ['zh','es','vi','en'])}>Translate</Button>
-                <div>
-                    <span>Spanish:</span><Form.Control value={translatedText.es || ''} ></Form.Control>
-                    <span>Chinese:</span><Form.Control value={translatedText.zh || ''} ></Form.Control>
-                    <span>Vietnamese:</span><Form.Control value={translatedText.vi || ''} ></Form.Control>
-                </div>
-                {isTranslateError && <div className="error-message">Please key in your word</div>}
-                <Form.File accept="audio/*" onChange={handleSelectAudio} />
-                <div className="test-canvas"></div>
             </Modal.Body>
 
             <Modal.Footer>
                 {/*<Button onClick={startDownload}>Download</Button>*/}
-                <Button >Test</Button>
-                <Button onClick={handleHideModal}>Close</Button>
+                <Button variant="danger mr-3" >Test</Button>
+                <Button variant="secondary mr-3" onClick={handleHideModal}>Close</Button>
                 <Button onClick={() => handleAddToStorage(previewCanvasRef.current,crop)}>Add</Button>
             </Modal.Footer>
         </Modal>

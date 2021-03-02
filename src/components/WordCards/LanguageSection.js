@@ -2,9 +2,9 @@ import React from 'react'
 import { languageInfo } from "../../lib/mockData";
 import { Badge } from 'react-bootstrap'
 
-const LanguageSection = ({ translatedWord }) => {
+const LanguageSection = ({ translatedWord, userTargetLanguages }) => {
 
-    const languageParams = languageInfo.find(element => element['id'] === translatedWord['id'])
+    const languageParams = userTargetLanguages.find(element => element['id'] === translatedWord['id'])
 
     let { isGender, writingSystem, name } = languageParams
 
