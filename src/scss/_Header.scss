@@ -9,4 +9,14 @@
     .logo {
         font-weight: bolder;
     }
+
+    #dropdown-item-button {
+        background-color: transparent;
+        border: none;
+    }
+
+    #dropdown-item-button:active, #dropdown-item-button:focus {
+        outline: none ;
+        box-shadow: none;
+    }
 }

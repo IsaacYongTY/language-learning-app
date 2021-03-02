@@ -8,18 +8,20 @@ import SettingPage from "./components/SettingPage";
 import React, { useState, useEffect } from "react";
 import firebase from "./lib/firebase";
 import {getCollectionData, getUserProfile} from "./lib/library";
+import Header from "./components/Header";
 
 function App() {
 
     const [ userProfile, setUserProfile ] = useState({})
-    const [ defaultTargetLanguages, setDefaultTargetLanguages ] = useState([])
-    const history = useHistory()
+    const [ userTargetLanguages, setUserTargetLanguages ] = useState([])
+    const [ systemTargetLanguages, setSystemTargetLanguages ] = useState([])
 
-
+    console.log(userProfile)
 
     return (
     <div className="App">
       <BrowserRouter>
+          <Header userProfile={userProfile} />
         <Switch>
 
 
@@ -27,14 +29,15 @@ function App() {
                 <MainPage
                     userProfile={userProfile}
                     setUserProfile={setUserProfile}
-                    defaultTargetLanguages={defaultTargetLanguages}
-                    setDefaultTargetLanguages={setDefaultTargetLanguages}
+                    userTargetLanguages={userTargetLanguages}
+                    setUserTargetLanguages={setUserTargetLanguages}
+                    setSystemTargetLanguages={setSystemTargetLanguages}
                 />
 
             </Route>
 
             <Route path="/login">
-                <LoginPage />
+                <LoginPage setUserProfile/>
             </Route>
 
             <Route path="/flashcard">
@@ -46,7 +49,12 @@ function App() {
             </Route>
 
             <Route path="/settings">
-                <SettingPage userProfile={userProfile} setUserProfile={setUserProfile} />
+                <SettingPage
+                    userProfile={userProfile}
+                    setUserProfile={setUserProfile}
+                    systemTargetLanguages={systemTargetLanguages}
+                    setSystemTargetLanguages={systemTargetLanguages}
+                />
             </Route>
 
         </Switch>

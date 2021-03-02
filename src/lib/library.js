@@ -21,17 +21,6 @@ export const convertToIpa = (words, targetLanguage) => {
     return words.split(' ').map(word => ipaDict[targetLanguage].get(word)).join(' ')
 }
 
-export const getUserProfile = async (collection, uid) => {
-
-    const collectionData = await db.collection(collection).doc(uid).get()
-
-    if(collectionData.exists) {
-        return collectionData.data()
-    }   else {
-        //throw error
-    }
-
-}
 
 const {Translate} = require('@google-cloud/translate').v2;
 const CREDENTIALS = JSON.parse(process.env.REACT_APP_GOOGLE_APPLICATION_CREDENTIALS)
@@ -57,6 +46,7 @@ export async function translateText(text,target, setTranslatedText) {
     setTranslatedText(prevState => ({...prevState, [target]: translations.join(',') }))
 }
 
+
 export const addToStorage = async (collection, file, id, data) => {
     console.log()
     const storageRef = storage.ref()
@@ -75,25 +65,34 @@ export const addToStorage = async (collection, file, id, data) => {
 
 }
 
+export const getUserProfile = async (collection, uid, setUserProfile) => {
+
+    let result = ''
+    db.collection(collection).doc(uid).onSnapshot(doc => {
+        setUserProfile(doc.data())
+        result = doc.data()
+
+    })
+
+    return result
+}
 
 export const getCollectionData = async (collection, setData) => {
 
-    const collectionData = await db.collection(collection)
-
-    collectionData.onSnapshot((querySnapshot) => {
+    db.collection(collection).onSnapshot((querySnapshot) => {
         let resultArray = []
-            console.log(querySnapshot.size)
+
          querySnapshot.forEach(doc => {
-            console.log(doc.data())
              resultArray.push(doc.data())
          })
 
         setData(resultArray)
 
-
-
     })
-
-
-
 }
+
+export const getTargetLanguages = async (collection) =>  await db.collection(collection).get().then(querySnapshot => querySnapshot.docs.map(doc => doc.data()))
+
+export const saveUserTargetLanguages = async (collection, id, userTargetLanguages) => await db.collection(collection).doc(id).update({ userTargetLanguages })
+
+
