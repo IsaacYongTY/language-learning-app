@@ -10,7 +10,7 @@ import {getUserProfile, getCollectionData, getTargetLanguages} from '../lib/libr
 
 import { Container } from 'react-bootstrap'
 
-const MainPage = ({userProfile, setUserProfile, userTargetLanguages, setUserTargetLanguages, setSystemTargetLanguages}) => {
+const MainPage = ({userProfile, setUserProfile, userTargetLanguages, setUserTargetLanguages, systemTargetLanguages, setSystemTargetLanguages}) => {
 
     const [ data, setData ] = useState([])
     const [ filteredData, setFilteredData ] = useState([])
@@ -78,6 +78,7 @@ const MainPage = ({userProfile, setUserProfile, userTargetLanguages, setUserTarg
                 setShowModal={setShowModal}
                 userProfile={userProfile}
                 userTargetLanguages={userTargetLanguages}
+                systemTargetLanguages={systemTargetLanguages}
             />
         </div>
     )

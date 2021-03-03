@@ -4,11 +4,15 @@ import ReactCrop from 'react-image-crop'
 import 'react-image-crop/dist/ReactCrop.css';
 import '../scss/_AddCardAdminModal.scss'
 import axios from 'axios'
-import {translateText, addToStorage, convertToIpa} from '../lib/library'
+import {translateText, addToStorage } from '../lib/library'
+
+import pinyin from "pinyin_js";
+import Sanscript from "@sanskrit-coders/sanscript";
+import aromanize from "aromanize";
 
 
 
-const AddCardAdminModal = ({ showModal, setShowModal, userProfile, userTargetLanguages }) => {
+const AddCardAdminModal = ({ showModal, setShowModal, userProfile, userTargetLanguages, systemTargetLanguages }) => {
 
     const [ toTranslateText, setToTranslateText ] = useState('')
     const [ translatedText, setTranslatedText ] = useState([])
@@ -26,6 +30,8 @@ const AddCardAdminModal = ({ showModal, setShowModal, userProfile, userTargetLan
     const previewCanvasRef = useRef(null);
 
     useEffect(() => {
+
+        console.log(systemTargetLanguages)
         if (completedCrop && previewCanvasRef.current && imgRef.current) {
 
             const image = imgRef.current;
@@ -57,13 +63,10 @@ const AddCardAdminModal = ({ showModal, setShowModal, userProfile, userTargetLan
         }
 
 
-        if(downloadedImage) {
-            downloadedImage.addEventListener('load', imageReceived, false)
-        }
+        downloadedImage && downloadedImage.addEventListener('load', imageReceived, false)
+
 
     }, [completedCrop, downloadedImage]);
-
-
 
     const handleHideModal = () => {
         setShowModal(false)
@@ -155,11 +158,17 @@ const AddCardAdminModal = ({ showModal, setShowModal, userProfile, userTargetLan
     }
 
     const romanizeWord = (word, targetLanguage) => {
-        switch(targetLanguage) {
+        switch (targetLanguage) {
             case('zh'):
-                return 'romanized'
+                return pinyin.pinyin(word, ' ')
             case('th'):
-                return 'thai romanized'
+                return null
+            case('ta'):
+                return Sanscript.t(word,'tamil','hk')
+            case('ja'):
+            case('ko'):
+                return aromanize.toLatin(word)
+
             default:
                 return null
         }
@@ -172,7 +181,6 @@ const AddCardAdminModal = ({ showModal, setShowModal, userProfile, userTargetLan
 
         let languageArray = []
 
-
         translatedText.forEach(language => {
 
             let { id, word, ipa } = language
@@ -180,7 +188,7 @@ const AddCardAdminModal = ({ showModal, setShowModal, userProfile, userTargetLan
                 id,
                 word,
                 ipa: ipa || null,
-                romanized: null,
+                romanized: romanizeWord(word, id),
                 feminine: null,
                 pronunciation: 'link to mp3 in firebase storage',
                 verified: false
@@ -219,8 +227,6 @@ const AddCardAdminModal = ({ showModal, setShowModal, userProfile, userTargetLan
         setIsTranslateError(true)
     }
 
-    console.log(userProfile.userTargetLanguages)
-    console.log(translatedText)
     const translationTextbox = (
 
         userProfile.userTargetLanguages?.map(targetLanguage => (
@@ -238,6 +244,8 @@ const AddCardAdminModal = ({ showModal, setShowModal, userProfile, userTargetLan
         ))
 
     )
+
+
     return (
         <Modal className="add-card-admin-modal" show={showModal} onHide={handleHideModal} size='xl'>
             <Modal.Header closeButton>
@@ -295,7 +303,7 @@ const AddCardAdminModal = ({ showModal, setShowModal, userProfile, userTargetLan
 
                     <ButtonToolbar className="justify-content-between align-items-center">
                         <div className="d-flex align-items-center">
-                            <Button onClick={()=>handleTranslateText(toTranslateText, userTargetLanguages)}>Translate</Button>
+                            <Button onClick={()=>handleTranslateText(toTranslateText, systemTargetLanguages)}>Translate</Button>
                             {isTranslateError && <div className="error-message">Please key in your word</div>}
                         </div>
 

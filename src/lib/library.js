@@ -13,18 +13,18 @@ const storage = firebase.storage()
 
 export const capitalizeWord = (words) => words.split(' ').map( word => word.split('').map((char, index) => !index ? char.toUpperCase() : char).join('')).join(' ')
 
-export const ipaDict = {
-    en: ipaDictEnUs,
-    es: ipaDictEs,
-    zh: ipaDictZhHans,
-    vi: ipaDictVi,
-    fr: ipaDictFr,
-    ja: ipaDictJa,
-    ko: ipaDictKo
-
-}
 
 export const convertToIpa = (words, targetLanguage) => {
+
+    const ipaDict = {
+        en: ipaDictEnUs,
+        es: ipaDictEs,
+        zh: ipaDictZhHans,
+        vi: ipaDictVi,
+        fr: ipaDictFr,
+        ja: ipaDictJa,
+        ko: ipaDictKo
+    }
     console.log(words)
     console.log(targetLanguage)
     return words.split(' ').map(word => ipaDict[targetLanguage]?.get(word)).join(' ')
@@ -110,6 +110,10 @@ export const getCollectionData = async (collection, setData) => {
 
 export const getTargetLanguages = async (collection) =>  await db.collection(collection).get().then(querySnapshot => querySnapshot.docs.map(doc => doc.data()))
 
-export const saveUserTargetLanguages = async (collection, id, userTargetLanguages) => await db.collection(collection).doc(id).update({ userTargetLanguages })
+export const saveUserTargetLanguages = async (collection, id, userTargetLanguages) => {
+    let response = await db.collection(collection).doc(id).update({ userTargetLanguages })
+
+    console.log(response)
+}
 
 

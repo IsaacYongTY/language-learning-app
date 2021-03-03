@@ -5,16 +5,20 @@
   "dependencies": {
     "@google-cloud/translate": "^6.1.0",
     "@popperjs/core": "^2.8.6",
+    "@sanskrit-coders/sanscript": "^1.1.0",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
     "antd": "^4.12.3",
+    "aromanize": "^0.1.5",
     "axios": "^0.21.1",
     "bootstrap": "^4.6.0",
+    "enzyme": "^3.11.0",
     "firebase": "^8.2.9",
     "ipa-dict": "^1.0.3",
     "jquery": "^3.5.1",
     "node-sass": "^5.0.0",
+    "pinyin_js": "^1.0.4",
     "popper.js": "^1.16.1",
     "react": "^17.0.1",
     "react-bootstrap": "^1.5.0",
@@ -22,6 +26,7 @@
     "react-image-crop": "^8.6.6",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
+    "wanakana": "^4.0.2",
     "web-vitals": "^1.0.1"
   },
   "scripts": {

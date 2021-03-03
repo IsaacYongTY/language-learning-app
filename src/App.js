@@ -30,6 +30,7 @@ function App() {
                     setUserProfile={setUserProfile}
                     userTargetLanguages={userTargetLanguages}
                     setUserTargetLanguages={setUserTargetLanguages}
+                    systemTargetLanguages={systemTargetLanguages}
                     setSystemTargetLanguages={setSystemTargetLanguages}
                 />
 

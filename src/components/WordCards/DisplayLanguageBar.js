@@ -3,7 +3,7 @@ import { Button } from "react-bootstrap";
 import '../../scss/_DisplayLanguageBar.scss'
 
 const DisplayLanguageBar = ({displayLanguage, setDisplayLanguage, userTargetLanguages}) => {
-    console.log(userTargetLanguages)
+
     const handleToggleLanguage = (language) => {
         !displayLanguage.includes(language)
             ?

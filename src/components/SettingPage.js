@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from 'react'
 
-import { Container, Button, Badge, Row, Col, Form } from "react-bootstrap";
+import { Container, Button, Badge, Row, Col, Form, Alert } from "react-bootstrap";
 import { saveUserTargetLanguages } from "../lib/library";
+
+import '../scss/_SettingsPage.scss'
 
 
 const SettingPage = ({userProfile, setUserProfile, systemTargetLanguages, setSystemTargetLanguages}) => {
 
     const [ selectedTargetLanguages, setSelectedTargetLanguages ] = useState([...userProfile.userTargetLanguages])
     const [ isMaxed, setIsMaxed ] = useState(false)
+    const [ isAlertShow, setIsAlertShow ] = useState(false)
 
     useEffect(() => {
 
@@ -34,7 +37,22 @@ const SettingPage = ({userProfile, setUserProfile, systemTargetLanguages, setSys
 
     }
 
-    const handleSaveSettings = () => saveUserTargetLanguages('users', userProfile.id, selectedTargetLanguages)
+    const handleSaveSettings = () => {
+        saveUserTargetLanguages('users', userProfile.id, selectedTargetLanguages).then((response) => {
+            console.log(response)
+        })
+        setIsAlertShow(true)
+
+        setTimeout(() => {
+            setIsAlertShow(false)
+        },3000)
+
+    }
+
+    const handleTest = () => {
+        console.log('in')
+        setIsAlertShow(true)
+    }
 
     const generateLanguageCol = (supportedLanguages) =>
         supportedLanguages
@@ -104,6 +122,16 @@ const SettingPage = ({userProfile, setUserProfile, systemTargetLanguages, setSys
             </Row>
 
             <Button onClick={handleSaveSettings}>Save Settings</Button>
+            <Button onClick={handleTest} className="btn-danger">Test</Button>
+            <Alert
+                variant="success"
+                className="alert-box"
+                show={isAlertShow}
+                onClose={() => setIsAlertShow(false)}
+                dismissible
+            >
+                Settings saved successfully
+            </Alert>
 
         </Container>
     )
