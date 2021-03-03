@@ -1,4 +1,5 @@
 import { Form, Input, Button, Checkbox, Card } from 'antd';
+import React, { useState } from 'react'
 import '../scss/_LoginPage.scss'
 import firebase from '../lib/firebase'
 import { useHistory } from 'react-router-dom'
@@ -18,7 +19,12 @@ const tailLayout = {
     },
 };
 
+
 const LoginPage = (props) => {
+
+    const [ userName, setUserName ] = useState('')
+    const [ password, setPassword ] = useState('')
+
     const history = useHistory()
     const onFinish = (values) => {
 
@@ -27,17 +33,14 @@ const LoginPage = (props) => {
             console.log('login successful')
 
             history.push('/')
-
-
+        }).catch((error) => {
 
         })
-
-
-
     };
 
     const onFinishFailed = (errorInfo) => {
         console.log('Failed:', errorInfo);
+        return 'Login failed'
     };
 
     return (
@@ -88,7 +91,7 @@ const LoginPage = (props) => {
                     </Form.Item>
 
                     <Form.Item {...tailLayout}>
-                        <Button type="primary" htmlType="submit">
+                        <Button  id="login-button" type="primary" onClick={onFinishFailed}>
                             Submit
                         </Button>
                     </Form.Item>
