@@ -1,106 +1,72 @@
-import { Form, Input, Button, Checkbox, Card } from 'antd';
+
 import React, { useState } from 'react'
 import '../scss/_LoginPage.scss'
 import firebase from '../lib/firebase'
 import { useHistory } from 'react-router-dom'
-
-const layout = {
-    labelCol: {
-        span: 8,
-    },
-    wrapperCol: {
-        span: 16,
-    },
-};
-const tailLayout = {
-    wrapperCol: {
-        offset: 8,
-        span: 16,
-    },
-};
+import {Card, FormControl, Button, Container} from "react-bootstrap";
 
 
 const LoginPage = (props) => {
 
-    const [ userName, setUserName ] = useState('')
+    const [ test, setTest ] = useState('')
     const [ password, setPassword ] = useState('')
 
-    const history = useHistory()
-    const onFinish = (values) => {
 
-        let { email, password } = values
+    const [ userInput, setUserInput ] = useState({})
+
+    const history = useHistory()
+
+    const handleUserInput = (e) => {
+
+        console.log(userInput)
+        setUserInput(prevState => ({ ...prevState, [e.target.name]: e.target.value} ))
+
+
+    }
+    const handleLogin = () => {
+
+        let { email, password } = userInput
+
+
+        console.log(userInput)
         firebase.auth().signInWithEmailAndPassword(email, password).then((response) => {
             console.log('login successful')
 
+            console.log(response)
             history.push('/')
         }).catch((error) => {
 
+            console.log('Caught error')
+
+            return error.code
+
         })
+
     };
 
-    const onFinishFailed = (errorInfo) => {
-        console.log('Failed:', errorInfo);
-        return 'Login failed'
-    };
+
+    const handleTest = () => {
+
+        return userInput
+    }
 
     return (
 
-        <div className="login-page">
-
-            <h1>Welcome</h1>
-            <Card className="login-card">
-
-
-                <Form
-                    {...layout}
-                    name="basic"
-                    initialValues={{
-                        remember: true,
-                    }}
-                    onFinish={onFinish}
-                    onFinishFailed={onFinishFailed}
-                >
-                    <Form.Item
-                        label="Email"
-                        name="email"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Please input your username!',
-                            },
-                        ]}
-                    >
-                        <Input />
-                    </Form.Item>
-
-                    <Form.Item
-                        label="Password"
-                        name="password"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Please input your password!',
-                            },
-                        ]}
-                    >
-                        <Input.Password />
-                    </Form.Item>
-
-                    <Form.Item {...tailLayout} name="remember" valuePropName="checked">
-                        <Checkbox>Remember me</Checkbox>
-                    </Form.Item>
-
-                    <Form.Item {...tailLayout}>
-                        <Button  id="login-button" type="primary" onClick={onFinishFailed}>
-                            Submit
-                        </Button>
-                    </Form.Item>
-                </Form>
+        <Container className="login-page">
+            <Card className="login-card ">
+                <Card.Title><h2>Welcome!</h2></Card.Title>
+                <Card.Body>
+                    <label>E-mail:</label>
+                    <FormControl className="mb-3" type="email" name="email" onChange={(e) => handleUserInput(e)} />
+                    <label>Password:</label>
+                    <FormControl className="mb-3" type="password" name="password" onChange={(e) => handleUserInput(e)}/>
+                    <Button className="login-button my-1" id="login-button" onClick={() => handleLogin(userInput)}>Submit</Button>
+                    <Button className="test-button" onClick = {handleTest}>Test</Button>
+                </Card.Body>
             </Card>
-        </div>
-            );
+        </Container>
 
-
-};
+    )
+}
 
 export default LoginPage

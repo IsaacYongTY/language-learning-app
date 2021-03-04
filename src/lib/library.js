@@ -110,10 +110,19 @@ export const getCollectionData = async (collection, setData) => {
 
 export const getTargetLanguages = async (collection) =>  await db.collection(collection).get().then(querySnapshot => querySnapshot.docs.map(doc => doc.data()))
 
-export const saveUserTargetLanguages = async (collection, id, userTargetLanguages) => {
-    let response = await db.collection(collection).doc(id).update({ userTargetLanguages })
+export const saveUserTargetLanguages = (collection, id, userTargetLanguages) => {
+   db.collection(collection).doc(id).update({ userTargetLanguages }).then((response) => {
+       console.log(response)
 
-    console.log(response)
+       return { status: 201}
+   }).catch(error => {
+       console.log('Failed')
+       return { status: 500}
+   })
+
+
+
+
 }
 
 
