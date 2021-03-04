@@ -9,6 +9,7 @@ import AddCardAdminModal from './AddCardAdminModal'
 import {getUserProfile, getCollectionData, getTargetLanguages} from '../lib/library'
 
 import { Container } from 'react-bootstrap'
+import CategoryBar from "./CategoryBar";
 
 const MainPage = ({userProfile, setUserProfile, userTargetLanguages, setUserTargetLanguages, systemTargetLanguages, setSystemTargetLanguages}) => {
 
@@ -18,6 +19,7 @@ const MainPage = ({userProfile, setUserProfile, userTargetLanguages, setUserTarg
     const [ isLogin, setIsLogin ] = useState(false)
     const [ showModal,setShowModal ] = useState(false)
 
+    const [ categories, setCategories ] = useState(['animals', 'number', 'objects'])
 
 
 
@@ -67,6 +69,9 @@ const MainPage = ({userProfile, setUserProfile, userTargetLanguages, setUserTarg
                     setShowModal={setShowModal}
                     userProfile={userProfile}
                 />
+                <CategoryBar
+                    categories={categories}
+                />
                 <WordCards
                     data={filteredData.length > 0 ? filteredData : data}
                     userTargetLanguages={userTargetLanguages}
@@ -79,6 +84,8 @@ const MainPage = ({userProfile, setUserProfile, userTargetLanguages, setUserTarg
                 userProfile={userProfile}
                 userTargetLanguages={userTargetLanguages}
                 systemTargetLanguages={systemTargetLanguages}
+                categories={categories}
+
             />
         </div>
     )

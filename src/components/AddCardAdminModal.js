@@ -1,23 +1,22 @@
 import React, {useCallback, useRef, useState, useEffect} from 'react'
-import {Button, Form, Modal, ButtonToolbar, Row, Col} from "react-bootstrap";
+import {Button, Form, Modal, ButtonToolbar, Row, Col, Dropdown} from "react-bootstrap";
 import ReactCrop from 'react-image-crop'
 import 'react-image-crop/dist/ReactCrop.css';
 import '../scss/_AddCardAdminModal.scss'
 import axios from 'axios'
-import {translateText, addToStorage } from '../lib/library'
+import {translateText, addToStorage, capitalizeWord} from '../lib/library'
 
 import pinyin from "pinyin_js";
 import Sanscript from "@sanskrit-coders/sanscript";
 import aromanize from "aromanize";
 
 
-
-const AddCardAdminModal = ({ showModal, setShowModal, userProfile, userTargetLanguages, systemTargetLanguages }) => {
+const AddCardAdminModal = ({ showModal, setShowModal, userProfile, userTargetLanguages, systemTargetLanguages, categories }) => {
 
     const [ toTranslateText, setToTranslateText ] = useState('')
     const [ translatedText, setTranslatedText ] = useState([])
     const [ uploadedImage, setUploadedImage ] = useState(null)
-
+    const [ data, setData ] = useState({})
     const [ isTranslateError, setIsTranslateError ] = useState(false)
     const [ isUnsplashError, setIsUnsplashError ] = useState(false)
 
@@ -198,6 +197,7 @@ const AddCardAdminModal = ({ showModal, setShowModal, userProfile, userTargetLan
         let data = {
             id: toTranslateText,
             word: toTranslateText,
+            category:
             languages: languageArray
 
         }
@@ -296,6 +296,26 @@ const AddCardAdminModal = ({ showModal, setShowModal, userProfile, userTargetLan
 
                 </Col>
                 <Col lg={4}>
+                    <Dropdown className="mt-4">
+                        <Dropdown.Toggle variant="light" id="dropdown-basic">
+                            Select Categories
+                        </Dropdown.Toggle>
+
+                        <Dropdown.Menu>
+                            {
+                                categories.map(category => (
+                                    <Dropdown.Item
+                                        as="button"
+                                        onClick={() => setCategory}
+                                    >
+                                        {capitalizeWord(category)}
+                                    </Dropdown.Item>
+                                ))
+                            }
+
+
+                        </Dropdown.Menu>
+                    </Dropdown>
                     <div className="my-3">
 
                         {translationTextbox}
