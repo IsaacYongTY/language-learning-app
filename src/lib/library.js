@@ -55,14 +55,12 @@ export async function translateText(text,target, setTranslatedText) {
 
     setTranslatedText(prevState => (
         [
-
             ...prevState,
             {
                 id: target,
                 word: translations.join(','),
                 ipa: convertToIpa(translations.join(','), target)
             }
-
         ]
     ))
 }
@@ -78,7 +76,7 @@ export const addToStorage = async (collection, blob, id, data) => {
 
     data[`imageUrl`] = imageUrl
 
-    await db.collection(collection).doc(id).set(data)
+    return await db.collection(collection).doc(id).set(data)
 
 }
 

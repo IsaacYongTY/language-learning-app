@@ -23,13 +23,13 @@ const HeaderDropdownMenu = ({ userProfile }) => {
 
     return (
 
-            <DropdownButton className="shadow-none" id="dropdown-item-button" title={userProfile.name}>
-                <Dropdown.Item as="button">Subscribe</Dropdown.Item>
-                <Dropdown.Item as="button" onClick={handleToSettings}>Settings</Dropdown.Item>
-                <Dropdown.Item as="button" >Help</Dropdown.Item>
-                <Dropdown.Divider />
-                <Dropdown.Item as="button"onClick={handleLogout}>Logout</Dropdown.Item>
-            </DropdownButton>
+        <DropdownButton className="shadow-none" id="dropdown-item-button" title={userProfile?.name}>
+            <Dropdown.Item as="button">Subscribe</Dropdown.Item>
+            <Dropdown.Item as="button" onClick={handleToSettings}>Settings</Dropdown.Item>
+            <Dropdown.Item as="button" >Help</Dropdown.Item>
+            <Dropdown.Divider />
+            <Dropdown.Item as="button"onClick={handleLogout}>Logout</Dropdown.Item>
+        </DropdownButton>
 
     )
 }

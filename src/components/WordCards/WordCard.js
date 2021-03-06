@@ -19,7 +19,7 @@ const WordCard = ( { word, userTargetLanguages }) => {
         <Col md={6} lg={4} className="mb-5 ">
             <Card>
 
-                    <h4 className="text-center my-2">{word.id.toUpperCase()}</h4>
+                    <h4 className="text-center my-2">{word.id?.toUpperCase()}</h4>
                 <div className="image-container">
 
                     <Card.Img className="mx-0 my-0" src={word.imageUrl} />

@@ -22,12 +22,15 @@ const SettingPage = ({userProfile, setUserProfile, systemTargetLanguages, setSys
 
     const handleSelectLanguages = (lang) => {
 
-        if(selectedTargetLanguages.length === maxLanguageCount && !selectedTargetLanguages.find(targetLanguage => targetLanguage.id === lang.id)) {
+        const isAlreadySelected = selectedTargetLanguages.find(targetLanguage => targetLanguage.id === lang.id)
+
+        if(selectedTargetLanguages.length === maxLanguageCount && !isAlreadySelected) {
+            console.log(selectedTargetLanguages)
             setIsMaxed(true)
             return
         }
 
-        selectedTargetLanguages.find(targetLanguage => targetLanguage.id === lang.id)
+        isAlreadySelected
             ?
             setSelectedTargetLanguages(prevState => prevState.filter(selectedLang => selectedLang.id !== lang.id))
             :
@@ -38,9 +41,7 @@ const SettingPage = ({userProfile, setUserProfile, systemTargetLanguages, setSys
     }
 
     const handleSaveSettings = () => {
-        saveUserTargetLanguages('users', userProfile.id, selectedTargetLanguages).then((response) => {
-            console.log(response)
-        })
+        saveUserTargetLanguages('users', userProfile.id, selectedTargetLanguages)
         setIsAlertShow(true)
 
         setTimeout(() => {
@@ -55,26 +56,32 @@ const SettingPage = ({userProfile, setUserProfile, systemTargetLanguages, setSys
     }
 
     const generateLanguageCol = (supportedLanguages) =>
+
+
+
         supportedLanguages
-            .map(lang => (
+            .map(lang => {
+                console.log(selectedTargetLanguages.find(targetLanguage => targetLanguage.id === lang.id))
+                return (
 
-                <Col>
-                    <div className="mb-3">
-                        <Form.Check>
-                            <Form.Check.Input
-                                disabled={!lang.isSupported}
-                                checked={selectedTargetLanguages.find(targetLanguage => targetLanguage.id === lang.id)}
-                                onClick={() => handleSelectLanguages(lang)}
-                            />
-                            <Form.Check.Label>{`${lang.name}`} <Badge
-                                variant="secondary">{lang.id.toUpperCase()}</Badge></Form.Check.Label>
-                            {!lang.isSupported && <span className="error-message">(coming soon)</span>}
-                        </Form.Check>
-                    </div>
-                </Col>
+                        <Col>
 
-                )
-        )
+                            <Form.Check className="mb-3">
+                                <Form.Check.Input
+                                    disabled={!lang.isSupported}
+                                    checked={selectedTargetLanguages.find(targetLanguage => targetLanguage.id === lang.id) || false}
+                                    onChange={() => handleSelectLanguages(lang)}
+                                />
+                                <Form.Check.Label>{`${lang.name}`} <Badge
+                                    variant="secondary">{lang.id.toUpperCase()}</Badge></Form.Check.Label>
+                                {!lang.isSupported && <span className="error-message">(coming soon)</span>}
+                            </Form.Check>
+
+                        </Col>
+
+                    )
+                }
+            )
 
 
     let supportedLanguageSingleCols = (supportedLanguages) => {

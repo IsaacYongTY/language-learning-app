@@ -19,7 +19,18 @@ const MainPage = ({userProfile, setUserProfile, userTargetLanguages, setUserTarg
     const [ isLogin, setIsLogin ] = useState(false)
     const [ showModal,setShowModal ] = useState(false)
 
-    const [ categories, setCategories ] = useState(['animals', 'number', 'objects'])
+    const [ filter, setFilter ] = useState('')
+
+    const categories = [
+        'animals',
+        'number',
+        'objects',
+        'colors',
+        'transportation',
+        'location',
+        'beverages',
+        'food'
+    ]
 
 
 
@@ -71,10 +82,13 @@ const MainPage = ({userProfile, setUserProfile, userTargetLanguages, setUserTarg
                 />
                 <CategoryBar
                     categories={categories}
+                    filter={filter}
+                    setFilter={setFilter}
                 />
                 <WordCards
                     data={filteredData.length > 0 ? filteredData : data}
                     userTargetLanguages={userTargetLanguages}
+                    filter={filter}
                 />
             </Container>
 
@@ -85,7 +99,6 @@ const MainPage = ({userProfile, setUserProfile, userTargetLanguages, setUserTarg
                 userTargetLanguages={userTargetLanguages}
                 systemTargetLanguages={systemTargetLanguages}
                 categories={categories}
-
             />
         </div>
     )

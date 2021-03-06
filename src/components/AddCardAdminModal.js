@@ -9,6 +9,7 @@ import {translateText, addToStorage, capitalizeWord} from '../lib/library'
 import pinyin from "pinyin_js";
 import Sanscript from "@sanskrit-coders/sanscript";
 import aromanize from "aromanize";
+import { toRomaji } from 'wanakana'
 
 
 const AddCardAdminModal = ({ showModal, setShowModal, userProfile, userTargetLanguages, systemTargetLanguages, categories }) => {
@@ -16,7 +17,7 @@ const AddCardAdminModal = ({ showModal, setShowModal, userProfile, userTargetLan
     const [ toTranslateText, setToTranslateText ] = useState('')
     const [ translatedText, setTranslatedText ] = useState([])
     const [ uploadedImage, setUploadedImage ] = useState(null)
-    const [ data, setData ] = useState({})
+    const [ category, setCategory ] = useState('')
     const [ isTranslateError, setIsTranslateError ] = useState(false)
     const [ isUnsplashError, setIsUnsplashError ] = useState(false)
 
@@ -165,6 +166,7 @@ const AddCardAdminModal = ({ showModal, setShowModal, userProfile, userTargetLan
             case('ta'):
                 return Sanscript.t(word,'tamil','hk')
             case('ja'):
+                return toRomaji(word)
             case('ko'):
                 return aromanize.toLatin(word)
 
@@ -197,14 +199,15 @@ const AddCardAdminModal = ({ showModal, setShowModal, userProfile, userTargetLan
         let data = {
             id: toTranslateText,
             word: toTranslateText,
-            category:
+            category,
             languages: languageArray
-
         }
 
         canvas.toBlob(
             (blob) => {
-               addToStorage('default-deck',blob,toTranslateText, data).then(() => {
+               addToStorage('default-deck',blob,toTranslateText, data).then((response) => {
+
+                   console.log(response)
                    setTranslatedText([])
                    setUploadedImage('')
                    setToTranslateText('')
@@ -217,10 +220,10 @@ const AddCardAdminModal = ({ showModal, setShowModal, userProfile, userTargetLan
 
     const handleTranslateTextInput = (e) => setToTranslateText(e.target.value)
 
-    const handleTranslateText = (text, target) => {
+    const handleTranslateText = (text) => {
         if(text) {
-            console.log(target)
-            target.forEach( targetLanguage => translateText(text, targetLanguage.id, setTranslatedText))
+            console.log(systemTargetLanguages)
+            systemTargetLanguages.forEach( targetLanguage => translateText(text, targetLanguage.id, setTranslatedText))
             setIsTranslateError(false)
             return
         }
@@ -298,7 +301,7 @@ const AddCardAdminModal = ({ showModal, setShowModal, userProfile, userTargetLan
                 <Col lg={4}>
                     <Dropdown className="mt-4">
                         <Dropdown.Toggle variant="light" id="dropdown-basic">
-                            Select Categories
+                            { capitalizeWord(category) || 'Select Categories' }
                         </Dropdown.Toggle>
 
                         <Dropdown.Menu>
@@ -306,7 +309,7 @@ const AddCardAdminModal = ({ showModal, setShowModal, userProfile, userTargetLan
                                 categories.map(category => (
                                     <Dropdown.Item
                                         as="button"
-                                        onClick={() => setCategory}
+                                        onClick={() => setCategory(category)}
                                     >
                                         {capitalizeWord(category)}
                                     </Dropdown.Item>
@@ -323,7 +326,7 @@ const AddCardAdminModal = ({ showModal, setShowModal, userProfile, userTargetLan
 
                     <ButtonToolbar className="justify-content-between align-items-center">
                         <div className="d-flex align-items-center">
-                            <Button onClick={()=>handleTranslateText(toTranslateText, systemTargetLanguages)}>Translate</Button>
+                            <Button onClick={()=>handleTranslateText(toTranslateText)}>Translate</Button>
                             {isTranslateError && <div className="error-message">Please key in your word</div>}
                         </div>
 
@@ -336,7 +339,6 @@ const AddCardAdminModal = ({ showModal, setShowModal, userProfile, userTargetLan
             </Modal.Body>
 
             <Modal.Footer>
-                {/*<Button onClick={startDownload}>Download</Button>*/}
                 <Button variant="danger mr-3" >Test</Button>
                 <Button variant="secondary mr-3" onClick={handleHideModal}>Close</Button>
                 <Button onClick={() => handleAddToStorage(previewCanvasRef.current,crop)}>Add</Button>
