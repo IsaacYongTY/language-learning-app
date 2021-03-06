@@ -10,7 +10,7 @@ const WordCards = ({ data, filter, userTargetLanguages }) => {
     return (
         <Row className="word-cards">
             {
-                data.filter(word => word.category === filter).map(word => (
+                data.filter(word => filter ? word.category === filter : word).map(word => (
                     <WordCard
                         word={word}
                         userTargetLanguages={userTargetLanguages}

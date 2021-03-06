@@ -29,7 +29,8 @@ const MainPage = ({userProfile, setUserProfile, userTargetLanguages, setUserTarg
         'transportation',
         'location',
         'beverages',
-        'food'
+        'food',
+        'music'
     ]
 
 

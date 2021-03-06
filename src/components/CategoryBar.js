@@ -6,18 +6,20 @@ const CategoryBar = ({categories, filter, setFilter}) => {
 
     const handleFilter = (category) => {
         console.log(category)
-        setFilter(category)
+        console.log(filter)
+
+        category !== filter ? setFilter(category) : setFilter('')
 
 
     }
     return (
-        <div>
+        <div className="mb-3">
             {
                 categories.map(category => (
                     <Badge
                         pill
                         variant= {category === filter ? "dark" : "light"}
-                        className="btn"
+                        className="btn mr-2"
                         onClick={() =>handleFilter(category)}
                     >
                         {capitalizeWord(category)}

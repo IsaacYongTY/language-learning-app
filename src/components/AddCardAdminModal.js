@@ -10,6 +10,7 @@ import pinyin from "pinyin_js";
 import Sanscript from "@sanskrit-coders/sanscript";
 import aromanize from "aromanize";
 import { toRomaji } from 'wanakana'
+import ChooseImageButton from "./ChooseImageButton";
 
 
 const AddCardAdminModal = ({ showModal, setShowModal, userProfile, userTargetLanguages, systemTargetLanguages, categories }) => {
@@ -77,13 +78,7 @@ const AddCardAdminModal = ({ showModal, setShowModal, userProfile, userTargetLan
         setIsTranslateError(false)
     }
 
-    const handleSelectFile = (e) => {
-        if(e.target.files && e.target.files.length > 0) {
-            const reader = new FileReader()
-            reader.addEventListener('load',() => setUploadedImage(reader.result))
-            reader.readAsDataURL(e.target.files[0])
-        }
-    }
+
 
 
     const onLoad = useCallback((img) => {
@@ -211,6 +206,7 @@ const AddCardAdminModal = ({ showModal, setShowModal, userProfile, userTargetLan
                    setTranslatedText([])
                    setUploadedImage('')
                    setToTranslateText('')
+                   setCategory('')
                })
             },
             'image/png',
@@ -283,7 +279,7 @@ const AddCardAdminModal = ({ showModal, setShowModal, userProfile, userTargetLan
                                 {isUnsplashError && <div className="error-message">Please key in your word</div>}
                             </div>
 
-                            <Form.File accept="image/*" onChange={(e) => handleSelectFile(e)}  />
+                            <ChooseImageButton setUploadedImage={setUploadedImage}/>
 
                         </ButtonToolbar>
 
