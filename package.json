@@ -10,7 +10,6 @@
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
     "@wojtekmaj/enzyme-adapter-react-17": "^0.4.1",
-    "antd": "^4.12.3",
     "aromanize": "^0.1.5",
     "axios": "^0.21.1",
     "bootstrap": "^4.6.0",
@@ -28,14 +27,17 @@
     "react-image-crop": "^8.6.6",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
+    "serve": "^11.3.2",
     "wanakana": "^4.0.2",
     "web-vitals": "^1.0.1"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "serve -s build",
+    "dev": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "heroku-postbuild": "yarn build"
   },
   "eslintConfig": {
     "extends": [
