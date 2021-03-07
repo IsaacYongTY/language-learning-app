@@ -14,10 +14,10 @@ const LoginPage = (props) => {
     const { accessCode } = useParams()
 
     console.log(accessCode)
+    console.log(process.env.REACT_APP_DEMO_ACCESS_CODE)
     useEffect(() => {
         if(accessCode == process.env.REACT_APP_DEMO_ACCESS_CODE) {
-            console.log('in')
-            console.log(process.env.REACT_APP_DEMO_PASSWORD)
+
             setUserInput({
                 email: process.env.REACT_APP_DEMO_EMAIL,
                 password: process.env.REACT_APP_DEMO_PASSWORD
