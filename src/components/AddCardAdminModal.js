@@ -228,7 +228,7 @@ const AddCardAdminModal = ({ showModal, setShowModal, userProfile, userTargetLan
 
     const translationTextbox = (
 
-        userProfile.userTargetLanguages?.map(targetLanguage => (
+        userProfile?.userTargetLanguages?.map(targetLanguage => (
                 <Row>
                     <Col>
                         <p className="mb-1">{targetLanguage.name}:</p>

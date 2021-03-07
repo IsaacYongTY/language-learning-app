@@ -20,7 +20,7 @@ const SearchBar = ( { data, setFilteredData, setShowModal, userProfile }) => {
                 placeholder="Search for..."
             />
 
-            { userProfile.status === 'admin' && <Button variant="danger" onClick={() => setShowModal(true)}> + Add New (Admin only)</Button>}
+            { userProfile?.status === 'admin' && <Button variant="danger" onClick={() => setShowModal(true)}> + Add New (Admin only)</Button>}
         </Row>
     )
 }

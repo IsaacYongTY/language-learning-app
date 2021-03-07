@@ -82,14 +82,18 @@ export const addToStorage = async (collection, blob, id, data) => {
 
 export const getUserProfile = async (collection, uid, setUserProfile) => {
 
-    let result = ''
-    db.collection(collection).doc(uid).onSnapshot(doc => {
-        setUserProfile(doc.data())
-        result = doc.data()
 
+    // db.collection(collection).doc(uid).onSnapshot(doc => {
+    //     setUserProfile(doc.data())
+    //     result = doc.data()
+    //
+    // })
+
+    return db.collection(collection).doc(uid).get().then(doc => {
+        return doc.data()
     })
 
-    return result
+
 }
 
 export const getCollectionData = async (collection, setData) => {
