@@ -37,36 +37,37 @@ const MainPage = ({userProfile, setUserProfile, userTargetLanguages, setUserTarg
 
     const history = useHistory()
 
+    if(!isLogin) {
+        firebase.auth().onAuthStateChanged( user => {
+
+
+            if(!user) {
+                history.push('/login')
+            } else {
+
+                getUserProfile('users', user.uid, setUserProfile).then((response) => {
+                    console.log(response)
+                    setUserTargetLanguages(userProfile.userTargetLanguages)
+                })
+
+                getTargetLanguages('target-languages').then((response) => {
+                    setSystemTargetLanguages(response)
+                })
+
+                getCollectionData('default-deck', setData)
+
+                setIsLogin(true)
+
+            }
+        })
+
+    }
+
     useEffect(() => {
 
-        if(!isLogin) {
-            firebase.auth().onAuthStateChanged( user => {
-
-
-                if(!user) {
-                    history.push('/login')
-                } else {
-
-                    getUserProfile('users', user.uid, setUserProfile).then((response) => {
-                        console.log(response)
-
-                    })
-
-                    getTargetLanguages('target-languages').then((response) => {
-                        setSystemTargetLanguages(response)
-                    })
-
-                    getCollectionData('default-deck', setData)
-
-                    setIsLogin(true)
-
-                }
-            })
-
-        }
 
         console.log(userProfile)
-        setUserTargetLanguages(userProfile.userTargetLanguages)
+
 
     }, [userProfile])
 
