@@ -8,7 +8,6 @@ const SearchBar = ( { data, setFilteredData, setShowModal, userProfile }) => {
         setFilteredData(data)
     },[])
     const handleSearch = (e) => {
-        console.log(e.target.value)
         e.target.value ? setFilteredData(data.filter(word => word.word.includes(e.target.value))) : setFilteredData([])
     }
 
@@ -20,7 +19,11 @@ const SearchBar = ( { data, setFilteredData, setShowModal, userProfile }) => {
                 placeholder="Search for..."
             />
 
-            { userProfile?.status === 'admin' && <Button variant="danger" onClick={() => setShowModal(true)}> + Add New (Admin only)</Button>}
+            {
+                userProfile?.status === 'admin' || userProfile?.status === 'demo'
+                &&
+                <Button variant="danger" onClick={() => setShowModal(true)}> + Add New (Admin only)</Button>
+            }
         </Row>
     )
 }

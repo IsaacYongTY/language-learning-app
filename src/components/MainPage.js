@@ -47,7 +47,6 @@ const MainPage = ({userProfile, setUserProfile, userTargetLanguages, setUserTarg
                 } else {
 
                     getUserProfile('users', user.uid, setUserProfile).then((response) => {
-                        console.log(response)
                         setUserProfile(response)
                         setUserTargetLanguages(response.userTargetLanguages)
                     })

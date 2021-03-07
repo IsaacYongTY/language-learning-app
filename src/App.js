@@ -15,16 +15,15 @@ function App() {
     const [ userTargetLanguages, setUserTargetLanguages ] = useState([])
     const [ systemTargetLanguages, setSystemTargetLanguages ] = useState([])
 
-    console.log(userProfile)
-
     return (
     <div className="App">
       <BrowserRouter>
-          <Header userProfile={userProfile} />
+
         <Switch>
 
 
             <Route exact path="/" >
+                <Header userProfile={userProfile} />
                 <MainPage
                     userProfile={userProfile}
                     setUserProfile={setUserProfile}
@@ -36,8 +35,12 @@ function App() {
 
             </Route>
 
-            <Route path="/login">
-                <LoginPage setUserProfile/>
+            <Route exact path="/login">
+                <LoginPage />
+            </Route>
+
+            <Route path="/demo/:accessCode">
+                <LoginPage />
             </Route>
 
             <Route path="/user-decks">
@@ -49,6 +52,7 @@ function App() {
             </Route>
 
             <Route path="/settings">
+                <Header userProfile={userProfile} />
                 <SettingPage
                     userProfile={userProfile}
                     setUserProfile={setUserProfile}

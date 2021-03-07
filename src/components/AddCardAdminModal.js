@@ -335,9 +335,14 @@ const AddCardAdminModal = ({ showModal, setShowModal, userProfile, userTargetLan
             </Modal.Body>
 
             <Modal.Footer>
-                <Button variant="danger mr-3" >Test</Button>
+                {userProfile?.status === 'admin' && <Button variant="danger mr-3" >Test</Button>}
                 <Button variant="secondary mr-3" onClick={handleHideModal}>Close</Button>
-                <Button onClick={() => handleAddToStorage(previewCanvasRef.current,crop)}>Add</Button>
+                <Button
+                    onClick={() => handleAddToStorage(previewCanvasRef.current,crop)}
+                    disabled={userProfile?.status === 'demo'}
+                >
+                    Add
+                </Button>
             </Modal.Footer>
         </Modal>
     )
