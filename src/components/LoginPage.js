@@ -13,8 +13,6 @@ const LoginPage = (props) => {
     const history = useHistory()
     const { accessCode } = useParams()
 
-    console.log(accessCode)
-    console.log(process.env.REACT_APP_DEMO_ACCESS_CODE)
     useEffect(() => {
         if(accessCode == process.env.REACT_APP_DEMO_ACCESS_CODE) {
 
@@ -35,17 +33,9 @@ const LoginPage = (props) => {
 
         let { email, password } = userInput
 
-
-
-        console.log(userInput)
         firebase.auth().signInWithEmailAndPassword(email, password).then((response) => {
-            console.log('login successful')
-
-            console.log(response)
             history.push('/')
         }).catch((error) => {
-
-            console.log('Caught error')
 
             return error.code
 
