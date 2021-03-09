@@ -20,7 +20,7 @@ const SearchBar = ( { data, setFilteredData, setShowModal, userProfile }) => {
             />
 
             {
-                userProfile?.status === 'admin' || userProfile?.status === 'demo'
+                (userProfile?.status === 'admin' || userProfile?.status === 'demo')
                 &&
                 <Button variant="danger" onClick={() => setShowModal(true)}> + Add New (Admin only)</Button>
             }
